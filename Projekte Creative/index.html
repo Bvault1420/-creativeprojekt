@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Meine Ultra-Cool Website</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-soft: rgba(15, 23, 42, 0.85);
+      --accent: #6366f1;
+      --accent-soft: rgba(99, 102, 241, 0.2);
+      --text: #e5e7eb;
+      --text-soft: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+      --card-radius: 18px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.55);
+      --blur: 18px;
+    }
+
+    body.light {
+      --bg: #f3f4f6;
+      --bg-soft: rgba(255, 255, 255, 0.9);
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.15);
+      --text: #111827;
+      --text-soft: #4b5563;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1d243b 0, #050816 45%, #000 100%);
+      color: var(--text);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 24px;
+      transition: background 0.6s ease, color 0.3s ease;
+    }
+
+    body.light {
+      background: radial-gradient(circle at top, #e5edff 0, #f3f4f6 40%, #e5e7eb 100%);
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-soft);
+      border-radius: var(--card-radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      backdrop-filter: blur(var(--blur));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top left, var(--accent-soft), transparent 60%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .title h1 {
+      font-size: 1.8rem;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title h1 span.logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #22c55e, #22d3ee);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+    }
+
+    .title p {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.75rem;
+      color: var(--text-soft);
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
+
+    .theme-toggle {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.8);
+      padding: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-toggle span {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: var(--text-soft);
+      z-index: 1;
+    }
+
+    .theme-toggle .thumb {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      width: 50%;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), #22c55e);
+      transition: transform 0.25s ease;
+    }
+
+    body.light .theme-toggle .thumb {
+      transform: translateX(100%);
+    }
+
+    main {
+      display: contents;
+    }
+
+    .clock {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .clock-time {
+      font-size: 2.4rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+
+    .clock-date {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+    }
+
+    .clock-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .section-title span.label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .todo {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .todo-input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    body.light .input {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--accent), #22c55e);
+      color: white;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.6);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.7);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.7);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: var(--text-soft);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      filter: none;
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .todo-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 220px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.85rem;
+    }
+
+    body.light .todo-item {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .todo-item.completed {
+      opacity: 0.6;
+    }
+
+    .todo-item.completed .todo-text {
+      text-decoration: line-through;
+    }
+
+    .todo-checkbox {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .todo-checkbox-inner {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: transparent;
+      transition: background 0.15s ease;
+    }
+
+    .todo-item.completed .todo-checkbox-inner {
+      background: var(--success);
+    }
+
+    .todo-text {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .todo-remove {
+      border: none;
+      background: transparent;
+      color: var(--text-soft);
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 4px;
+      border-radius: 999px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .todo-remove:hover {
+      background: rgba(248, 113, 113, 0.12);
+      color: var(--danger);
+    }
+
+    .quote {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quote-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      position: relative;
+      padding-left: 14px;
+    }
+
+    .quote-text::before {
+      content: "“";
+      position: absolute;
+      left: 0;
+      top: -6px;
+      font-size: 1.8rem;
+      color: var(--accent);
+      opacity: 0.7;
+    }
+
+    .quote-author {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .quote-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .quote-tag {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-soft);
+    }
+
+    .game {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .game-status {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+
+    .game-arena {
+      margin-top: 4px;
+      border-radius: 16px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .game-target {
+      width: 70px;
+      height: 70px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #f97316, #ef4444);
+      box-shadow: 0 0 25px rgba(248, 113, 113, 0.9);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      user-select: none;
+      margin: 0 auto;
+      transform: scale(0);
+      opacity: 0;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    .game-target.visible {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .game-metrics {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 0.75rem;
+      color: var(--text-soft);
+    }
+
+    .layout-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .activity {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .activity-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .activity-label {
+      color: var(--text-soft);
+    }
+
+    .activity-bar {
+      margin-top: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .activity-bar-fill {
+      position: absolute;
+      inset: 0;
+      width: 40%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #22c55e);
+      transform-origin: left;
+      transform: scaleX(0.7);
+      transition: transform 0.4s ease;
+    }
+
+    .footer {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-soft);
+      margin-top: 4px;
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.6);
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.9);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="card">
+      <div class="card-inner" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div class="title">
+          <h1>
+            <span class="logo-dot"></span>
+            Meine Ultra-Cool Website
+          </h1>
+          <p>Spielplatz für Features, Experimente und ein bisschen Chaos.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <div class="pill">
+            <span class="pill-dot"></span>
+            <span>Live • Local only</span>
+          </div>
+          <button class="theme-toggle" id="themeToggle" aria-label="Theme wechseln">
+            <div class="thumb"></div>
+            <span>Dark</span>
+            <span>Light</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <div class="card-inner clock">
+          <div class="section-title">
+            <span>Dashboard</span>
+            <span class="label">Live</span>
+          </div>
+          <div class="clock-time" id="clockTime">--:--:--</div>
+          <div class="clock-date" id="clockDate">Lädt Datum…</div>
+          <div class="clock-row">
+            <div class="chip" id="clockDay">Tag</div>
+            <div class="chip" id="clockInfo">Browser-Timezone</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-inner todo">
+          <div class="section-title">
+            <span>To-Do-Liste</span>
+            <span class="label">Speichert lokal</span>
+          </div>
+          <div class="todo-input-row">
+            <input
+              id="todoInput"
+              class="input"
+              type="text"
+              placeholder="Was willst du erledigen?"
+            />
+            <button class="btn" id="todoAddBtn">Add</button>
+          </div>
+          <ul class="todo-list" id="todoList"></ul>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-size:0.8rem;color:var(--text-soft);gap:8px;flex-wrap:wrap;">
+            <span id="todoStats">0 Tasks</span>
+            <button class="btn btn-secondary" id="todoClearBtn">Alles löschen</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-inner quote">
+          <div class="section-title">
+            <span>Random Quote</span>
+            <span class="label">Inspiration</span>
+          </div>
+          <div class="quote-text" id="quoteText">
+            Klicke auf „Neuer Quote“, um etwas Motivation zu bekommen.
+          </div>
+          <div class="quote-author" id="quoteAuthor"></div>
+          <div class="quote-tags" id="quoteTags"></div>
+          <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-secondary" id="quoteBtn">Neuer Quote</button>
+            <span style="font-size:0.75rem;color:var(--text-soft);">Offline – Quotes sind im Code gespeichert.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-inner game">
+          <div class="section-title">
+            <span>Reaktionsspiel</span>
+            <span class="label">Mini Game</span>
+          </div>
+          <div class="game-status" id="gameStatus">
+            Klicke auf „Start“, warte bis der Kreis erscheint und klicke so schnell wie möglich.
+          </div>
+          <div class="game-arena">
+            <div class="game-target" id="gameTarget">Klick!</div>
+            <div class="game-metrics">
+              <span class="badge">Letzte Zeit: <span id="gameLast">–</span> ms</span>
+              <span class="badge">Bestzeit: <span id="gameBest">–</span> ms</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+              <button class="btn" id="gameStartBtn">Start</button>
+              <button class="btn btn-secondary" id="gameResetBtn">Reset</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="layout-right">
+        <div class="card">
+          <div class="card-inner activity">
+            <div class="section-title">
+              <span>Session Stats</span>
+              <span class="label">Live</span>
+            </div>
+            <div class="activity-row">
+              <span class="activity-label">Seite geöffnet seit</span>
+              <span id="sessionTime">0s</span>
+            </div>
+            <div class="activity-row">
+              <span class="activity-label">Anzahl Quotes</span>
+              <span id="sessionQuotes">0</span>
+            </div>
+            <div class="activity-row">
+              <span class="activity-label">Anzahl Game-Starts</span>
+              <span id="sessionGames">0</span>
+            </div>
+            <div class="activity-bar">
+              <div class="activity-bar-fill" id="activityBarFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-inner">
+            <div class="section-title">
+              <span>Info</span>
+              <span class="label">About</span>
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-soft);line-height:1.5;">
+              Diese Seite ist komplett in einer einzigen <code>index.html</code>-Datei gebaut.
+              Du kannst den Code anpassen, neue Features einbauen oder das Design ändern
+              und die Datei einfach an deine Freunde schicken.
+            </p>
+            <p style="font-size:0.8rem;color:var(--text-soft);margin-top:8px;">
+              Alles läuft nur im Browser – kein Server, keine Datenübertragung. To-Dos und Theme
+              werden lokal im Browser gespeichert.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        Made with ein bisschen Chaos &amp; viel Neugier.  
+        <span>Probier den Code aus, brich ihn, bau ihn neu.</span>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const body = document.body;
+    const themeToggle = document.getElementById("themeToggle");
+
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") {
+      body.classList.add("light");
+    }
+
+    themeToggle.addEventListener("click", () => {
+      body.classList.toggle("light");
+      const mode = body.classList.contains("light") ? "light" : "dark";
+      localStorage.setItem("theme", mode);
+    });
+
+    const clockTime = document.getElementById("clockTime");
+    const clockDate = document.getElementById("clockDate");
+    const clockDay = document.getElementById("clockDay");
+    const clockInfo = document.getElementById("clockInfo");
+
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      const dateStr = now.toLocaleDateString("de-DE", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      clockTime.textContent = timeStr;
+      clockDate.textContent = dateStr;
+      clockDay.textContent = now.toLocaleDateString("de-DE", { weekday: "long" });
+      clockInfo.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    const todoInput = document.getElementById("todoInput");
+    const todoAddBtn = document.getElementById("todoAddBtn");
+    const todoList = document.getElementById("todoList");
+    const todoClearBtn = document.getElementById("todoClearBtn");
+    const todoStats = document.getElementById("todoStats");
+
+    let todos = [];
+
+    function loadTodos() {
+      try {
+        const raw = localStorage.getItem("todos_v1");
+        if (raw) {
+          todos = JSON.parse(raw);
+        }
+      } catch (e) {
+        todos = [];
+      }
+      renderTodos();
+    }
+
+    function saveTodos() {
+      localStorage.setItem("todos_v1", JSON.stringify(todos));
+    }
+
+    function renderTodos() {
+      todoList.innerHTML = "";
+      todos.forEach((todo, index) => {
+        const li = document.createElement("li");
+        li.className = "todo-item" + (todo.done ? " completed" : "");
+        li.dataset.index = index;
+
+        const checkbox = document.createElement("button");
+        checkbox.className = "todo-checkbox";
+        const inner = document.createElement("div");
+        inner.className = "todo-checkbox-inner";
+        checkbox.appendChild(inner);
+
+        checkbox.addEventListener("click", () => toggleTodo(index));
+
+        const text = document.createElement("div");
+        text.className = "todo-text";
+        text.textContent = todo.text;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "todo-remove";
+        removeBtn.textContent = "✕";
+        removeBtn.addEventListener("click", () => removeTodo(index));
+
+        li.appendChild(checkbox);
+        li.appendChild(text);
+        li.appendChild(removeBtn);
+        todoList.appendChild(li);
+      });
+
+      const total = todos.length;
+      const done = todos.filter((t) => t.done).length;
+      todoStats.textContent = `${total} Tasks • ${done} erledigt`;
+    }
+
+    function addTodo() {
+      const text = todoInput.value.trim();
+      if (!text) return;
+      todos.unshift({ text, done: false });
+      todoInput.value = "";
+      saveTodos();
+      renderTodos();
+    }
+
+    function toggleTodo(index) {
+      todos[index].done = !todos[index].done;
+      saveTodos();
+      renderTodos();
+    }
+
+    function removeTodo(index) {
+      todos.splice(index, 1);
+      saveTodos();
+      renderTodos();
+    }
+
+    function clearTodos() {
+      if (!todos.length) return;
+      if (confirm("Wirklich alle To-Dos löschen?")) {
+        todos = [];
+        saveTodos();
+        renderTodos();
+      }
+    }
+
+    todoAddBtn.addEventListener("click", addTodo);
+    todoInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addTodo();
+    });
+    todoClearBtn.addEventListener("click", clearTodos);
+
+    loadTodos();
+
+    const quotes = [
+      {
+        text: "Code ist wie Humor. Wenn du ihn erklären musst, ist er schlecht.",
+        author: "Cory House",
+        tags: ["Code", "Humor"],
+      },
+      {
+        text: "Das Beste, was du lernen kannst, ist, wie man lernt.",
+        author: "Unbekannt",
+        tags: ["Lernen", "Mindset"],
+      },
+      {
+        text: "Perfekt ist der Feind von fertig.",
+        author: "Voltaire",
+        tags: ["Produktivität", "Perfektionismus"],
+      },
+      {
+        text: "Wenn es dich nicht ein bisschen nervös macht, ist es wahrscheinlich zu einfach.",
+        author: "Unbekannt",
+        tags: ["Comfort Zone", "Growth"],
+      },
+      {
+        text: "Erst baust du deine Gewohnheiten, dann bauen deine Gewohnheiten dich.",
+        author: "James Clear",
+        tags: ["Gewohnheiten"],
+      },
+      {
+        text: "Jeder Profi war einmal ein Anfänger.",
+        author: "Unbekannt",
+        tags: ["Anfangen"],
+      },
+      {
+        text: "Der beste Moment anzufangen war gestern. Der zweitbeste ist jetzt.",
+        author: "Unbekannt",
+        tags: ["Start", "Motivation"],
+      },
+    ];
+
+    const quoteText = document.getElementById("quoteText");
+    const quoteAuthor = document.getElementById("quoteAuthor");
+    const quoteTags = document.getElementById("quoteTags");
+    const quoteBtn = document.getElementById("quoteBtn");
+
+    let sessionQuoteCount = 0;
+
+    function randomQuote() {
+      const q = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteText.textContent = q.text;
+      quoteAuthor.textContent = "— " + q.author;
+      quoteTags.innerHTML = "";
+      q.tags.forEach((tag) => {
+        const span = document.createElement("span");
+        span.className = "quote-tag";
+        span.textContent = "#" + tag;
+        quoteTags.appendChild(span);
+      });
+      sessionQuoteCount++;
+      updateSessionStats();
+    }
+
+    quoteBtn.addEventListener("click", randomQuote);
+
+    const gameTarget = document.getElementById("gameTarget");
+    const gameStatus = document.getElementById("gameStatus");
+    const gameStartBtn = document.getElementById("gameStartBtn");
+    const gameResetBtn = document.getElementById("gameResetBtn");
+    const gameLast = document.getElementById("gameLast");
+    const gameBest = document.getElementById("gameBest");
+
+    let gameState = "idle";
+    let gameTimeout = null;
+    let gameStartTime = 0;
+    let bestTime = null;
+    let sessionGameCount = 0;
+
+    function resetGameVisual() {
+      gameTarget.classList.remove("visible");
+    }
+
+    function startGame() {
+      if (gameState === "waiting" || gameState === "ready") return;
+      resetGameVisual();
+      gameStatus.textContent = "Warte auf den Kreis… nicht schummeln!";
+      gameState = "waiting";
+      sessionGameCount++;
+      updateSessionStats();
+
+      const delay = 800 + Math.random() * 2200;
+      gameTimeout = setTimeout(() => {
+        gameState = "ready";
+        gameStartTime = performance.now();
+        gameTarget.classList.add("visible");
+        gameStatus.textContent = "Jetzt! Klick so schnell du kannst!";
+      }, delay);
+    }
+
+    function resetGame() {
+      if (gameTimeout) clearTimeout(gameTimeout);
+      gameTimeout = null;
+      gameState = "idle";
+      resetGameVisual();
+      gameStatus.textContent =
+        "Klicke auf „Start“, warte bis der Kreis erscheint und klicke so schnell wie möglich.";
+      gameLast.textContent = "–";
+      gameBest.textContent = bestTime != null ? bestTime : "–";
+    }
+
+    function handleGameClick() {
+      if (gameState === "waiting") {
+        if (gameTimeout) clearTimeout(gameTimeout);
+        gameTimeout = null;
+        gameState = "idle";
+        gameStatus.textContent =
+          "Zu früh geklickt! Versuch es nochmal und warte, bis der Kreis erscheint.";
+        resetGameVisual();
+        return;
+      }
+
+      if (gameState === "ready") {
+        const now = performance.now();
+        const diff = Math.round(now - gameStartTime);
+        gameLast.textContent = diff;
+        if (bestTime == null || diff < bestTime) {
+          bestTime = diff;
+          gameBest.textContent = bestTime;
+          gameStatus.textContent = `Nice! Neue Bestzeit: ${diff} ms`;
+        } else {
+          gameStatus.textContent = `Deine Zeit: ${diff} ms. Versuch, deine Bestzeit zu schlagen!`;
+        }
+        gameState = "idle";
+        resetGameVisual();
+      }
+    }
+
+    gameStartBtn.addEventListener("click", startGame);
+    gameResetBtn.addEventListener("click", resetGame);
+    gameTarget.addEventListener("click", handleGameClick);
+
+    const sessionTimeEl = document.getElementById("sessionTime");
+    const sessionQuotesEl = document.getElementById("sessionQuotes");
+    const sessionGamesEl = document.getElementById("sessionGames");
+    const activityBarFill = document.getElementById("activityBarFill");
+
+    const sessionStart = Date.now();
+
+    function updateSessionStats() {
+      const seconds = Math.floor((Date.now() - sessionStart) / 1000);
+      sessionTimeEl.textContent = seconds + "s";
+      sessionQuotesEl.textContent = sessionQuoteCount;
+      sessionGamesEl.textContent = sessionGameCount;
+
+      const activityScore = Math.min(
+        1,
+        (sessionQuoteCount * 0.2 + sessionGameCount * 0.3 + seconds / 120) / 2
+      );
+      activityBarFill.style.transform = `scaleX(${0.2 + activityScore * 0.8})`;
+    }
+
+    setInterval(updateSessionStats, 1000);
+    updateSessionStats();
+  </script>
+</body>
+</html>
