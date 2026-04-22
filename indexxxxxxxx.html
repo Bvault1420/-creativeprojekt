@@ -1,0 +1,3175 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>DayFlow – Live Krypto Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg-main: #05071a;
+      --bg-elevated: #080c22;
+      --bg-elevated-soft: #060919;
+      --border-subtle: #1a2040;
+      --text-main: #e8eaf6;
+      --text-muted: #8b93b8;
+      --accent: #6c63ff;
+      --accent2: #a78bfa;
+      --accent-soft: rgba(108, 99, 255, 0.13);
+      --accent-glow: rgba(108, 99, 255, 0.35);
+      --positive: #10d98a;
+      --negative: #ff4d6d;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.7);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #05071a;
+      background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(108,99,255,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 0%, rgba(167,139,250,0.08) 0%, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    header {
+      padding: 14px 28px 10px;
+      border-bottom: 1px solid rgba(108,99,255,0.18);
+      background: rgba(5,7,26,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.5), 0 1px 0 rgba(108,99,255,0.15);
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      box-shadow: 0 0 20px var(--accent-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .logo-text { color: var(--text-main); }
+    .logo-text span { color: var(--accent2); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .global-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+      justify-content: flex-end;
+    }
+    .metric-card {
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(108,99,255,0.07);
+      border: 1px solid rgba(108,99,255,0.2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.2s;
+    }
+    .metric-card:hover { border-color: rgba(108,99,255,0.4); }
+    .metric-label { color: var(--text-muted); }
+    .metric-value { font-weight: 600; }
+    .metric-change-pos { color: var(--positive); }
+    .metric-change-neg { color: var(--negative); }
+
+    .auth-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(108,99,255,0.07);
+      border: 1px solid rgba(108,99,255,0.2);
+      min-height: 38px;
+    }
+    .auth-user {
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    .auth-user.active {
+      display: flex;
+    }
+    .auth-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+    .auth-user-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      line-height: 1.15;
+    }
+    .auth-user-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .auth-user-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .auth-guest {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    .auth-guest.hidden {
+      display: none;
+    }
+
+    .subnav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 13px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .subnav-left {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .pill {
+      padding: 5px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(108,99,255,0.2);
+      background: rgba(108,99,255,0.05);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease-out;
+    }
+    .pill:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+      background: rgba(108,99,255,0.12);
+      box-shadow: 0 0 16px rgba(108,99,255,0.2);
+    }
+    .pill.active {
+      border-color: var(--accent);
+      color: #fff;
+      background: linear-gradient(135deg, rgba(108,99,255,0.3) 0%, rgba(167,139,250,0.2) 100%);
+      box-shadow: 0 0 20px rgba(108,99,255,0.3);
+    }
+    .search-box {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(108,99,255,0.2);
+      background: rgba(108,99,255,0.05);
+      color: var(--text-main);
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      min-width: 220px;
+      outline: none;
+      transition: all 0.18s ease-out;
+    }
+    .search-box:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+    }
+    .search-box::placeholder { color: var(--text-muted); }
+
+    .auth-button {
+      border: 1px solid rgba(108,99,255,0.25);
+      background: rgba(108,99,255,0.07);
+      color: var(--text-muted);
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.18s ease-out;
+    }
+    .auth-button:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+      background: rgba(108,99,255,0.15);
+      box-shadow: 0 0 16px rgba(108,99,255,0.2);
+    }
+    .auth-button.primary {
+      border-color: transparent;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(108,99,255,0.4);
+    }
+    .auth-button.primary:hover {
+      color: #fff;
+      box-shadow: 0 4px 28px rgba(108,99,255,0.6);
+      transform: translateY(-1px);
+    }
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      justify-content: center;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    main {
+      padding: 18px 24px 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 19px;
+      margin: 0 0 4px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      background: rgba(8,12,34,0.8);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(108,99,255,0.15);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    /* LOADING SPINNER */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(8,12,34,0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      border-radius: 14px;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(108,99,255,0.2);
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .skeleton-row {
+      height: 48px;
+      background: linear-gradient(90deg, rgba(108,99,255,0.05) 25%, rgba(108,99,255,0.1) 50%, rgba(108,99,255,0.05) 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 8px;
+      margin: 4px 12px;
+    }
+
+    @keyframes skeleton-loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .table-loading {
+      position: relative;
+    }
+
+    tbody.loading .skeleton-row { display: block; }
+    tbody:not(.loading) .skeleton-row { display: none; }
+    thead {
+      background: rgba(5,7,26,0.95);
+      position: sticky;
+      top: 96px;
+      z-index: 10;
+    }
+    th, td {
+      padding: 9px 12px;
+      text-align: right;
+      border-bottom: 1px solid rgba(108,99,255,0.07);
+      white-space: nowrap;
+    }
+    th {
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: rgba(5,7,26,0.95);
+    }
+    th:first-child, td:first-child { text-align: left; }
+    tr:nth-child(even) td { background: rgba(108,99,255,0.02); }
+    tr:nth-child(odd) td { background: transparent; }
+    tr:hover td {
+      background: rgba(108,99,255,0.08);
+      cursor: pointer;
+    }
+    .rank { color: var(--text-muted); font-size: 11px; }
+    .name-cell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .name-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .symbol { font-size: 11px; color: var(--text-muted); }
+    .chip-symbol {
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(108,99,255,0.2);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent2);
+      background: rgba(108,99,255,0.08);
+    }
+    .change-pos { color: var(--positive); font-weight: 500; }
+    .change-neg { color: var(--negative); font-weight: 500; }
+    .muted { color: var(--text-muted); }
+
+    .watch-icon {
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: color 0.15s ease-out, transform 0.15s ease-out, border-color 0.15s ease-out, background 0.15s ease-out;
+      flex-shrink: 0;
+    }
+    .watch-icon:hover {
+      color: var(--accent2);
+      transform: scale(1.15);
+    }
+    .watch-active {
+      color: var(--accent2);
+      text-shadow: 0 0 10px rgba(167,139,250,0.7);
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .auth-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(5,7,26,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 100;
+    }
+    .auth-modal.active { display: flex; }
+
+    .auth-card {
+      width: min(100%, 480px);
+      border: 1px solid rgba(108,99,255,0.25);
+      background: linear-gradient(160deg, #0d1035 0%, #080c22 50%, #05071a 100%);
+      border-radius: 28px;
+      box-shadow: 0 0 0 1px rgba(108,99,255,0.1), 0 32px 80px rgba(0,0,0,0.8), 0 0 80px rgba(108,99,255,0.1);
+      overflow: hidden;
+      position: relative;
+    }
+    .auth-card::before {
+      content: "";
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 260px; height: 260px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(108,99,255,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .auth-card::after {
+      content: "";
+      position: absolute;
+      bottom: -40px; right: -40px;
+      width: 200px; height: 200px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .auth-card-header {
+      padding: 32px 28px 16px;
+      border-bottom: 1px solid rgba(108,99,255,0.12);
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .auth-logo-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      box-shadow: 0 0 40px rgba(108,99,255,0.5), 0 8px 20px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 16px;
+    }
+    .auth-card-title {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+    .auth-card-title span { color: var(--accent2); }
+    .auth-card-subtitle {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 20px 28px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .auth-tab {
+      border: 1px solid rgba(108,99,255,0.2);
+      background: rgba(108,99,255,0.05);
+      color: var(--text-muted);
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.18s ease-out;
+    }
+    .auth-tab.active,
+    .auth-tab:hover {
+      border-color: var(--accent);
+      color: #fff;
+      background: linear-gradient(135deg, rgba(108,99,255,0.25) 0%, rgba(167,139,250,0.15) 100%);
+      box-shadow: 0 0 20px rgba(108,99,255,0.2);
+    }
+    .auth-form {
+      display: none;
+      padding: 20px 28px 28px;
+      position: relative;
+      z-index: 1;
+    }
+    .auth-form.active { display: block; }
+    .auth-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .auth-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .auth-field.full { grid-column: 1 / -1; }
+    .auth-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;      color: var(--text-muted);
+    }
+    .auth-input,
+    .settings-select {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(108,99,255,0.2);
+      background: rgba(108,99,255,0.06);
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.18s ease-out;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+    }
+    .auth-input::placeholder { color: var(--text-muted); }
+    .auth-input:focus,
+    .settings-select:focus {
+      border-color: var(--accent);
+      background: rgba(108,99,255,0.1);
+      box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+    }
+    .auth-submit { width: 100%; margin-top: 4px; padding: 14px; font-size: 14px; border-radius: 14px; }
+    .auth-message {
+      min-height: 20px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .auth-message.error { color: #ff6b8a; }
+    .auth-message.success { color: var(--positive); }
+    .auth-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 32px; height: 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(108,99,255,0.2);
+      background: rgba(108,99,255,0.08);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.18s ease-out;
+      z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+    .auth-close:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+      background: rgba(108,99,255,0.15);
+    }
+    .settings-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .settings-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    #detailView {
+      display: none;
+      animation: fadeIn 0.18s ease-out;
+    }
+
+    .detail-hero {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .detail-hero-left {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 240px;
+    }
+    .detail-coin-identity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .detail-rank-badge {
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: #020617;
+    }
+    .detail-price-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .detail-price {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .detail-change-badge {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .detail-change-badge.pos {
+      background: rgba(34,197,94,0.15);
+      color: var(--positive);
+      border: 1px solid rgba(34,197,94,0.3);
+    }
+    .detail-change-badge.neg {
+      background: rgba(239,68,68,0.15);
+      color: var(--negative);
+      border: 1px solid rgba(239,68,68,0.3);
+    }
+    .detail-hl-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .detail-range-bar {
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+      background: #1f2937;
+      min-width: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .detail-range-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      background: linear-gradient(90deg, var(--negative), var(--positive));
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+    .detail-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      flex: 1;
+    }
+    .price-flash-up {
+      animation: flashUp 0.5s ease-out;
+    }
+    .price-flash-down {
+      animation: flashDown 0.5s ease-out;
+    }
+    @keyframes flashUp {
+      0% { color: var(--positive); }
+      100% { color: inherit; }
+    }
+    @keyframes flashDown {
+      0% { color: var(--negative); }
+      100% { color: inherit; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .back-button {
+      border: 1px solid var(--border-subtle);
+      background: #020617;
+      color: var(--text-muted);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease-out;
+    }
+    .back-button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(251, 191, 36, 0.06);
+      box-shadow: 0 0 18px rgba(251, 191, 36, 0.25);
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .detail-main-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .detail-name {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .detail-symbol {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .detail-price {
+      font-size: 28px;
+      font-weight: 600;
+    }
+    .detail-change {
+      font-size: 13px;
+    }
+    .detail-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 8px;
+      font-size: 12px;
+    }
+    .stat-card {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, #111827 0, #020617 60%);
+      box-shadow: var(--shadow-soft);
+    }
+    .stat-label {
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+    .stat-value {
+      font-weight: 600;
+    }
+
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .chart-card, .markets-card {
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated-soft);
+      padding: 10px;
+      box-shadow: var(--shadow-soft);
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    #chartContainer {
+      width: 100%;
+      height: 420px;
+    }
+
+    .detail-tabs {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 12px;
+    }
+    .detail-tab {
+      padding: 4px 10px;
+      cursor: pointer;
+      border-radius: 4px 4px 0 0;
+      border: 1px solid transparent;
+      border-bottom: none;
+      color: var(--text-muted);
+      transition: all 0.18s ease-out;
+    }
+    .detail-tab:hover {
+      color: var(--accent);
+    }
+    .detail-tab.active {
+      border-color: var(--border-subtle);
+      color: var(--accent);
+      background: #020617;
+    }
+    .detail-tab-content {
+      padding: 10px 0;
+      font-size: 12px;
+    }
+    .markets-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    .markets-table th, .markets-table td {
+      padding: 4px 6px;
+      border-bottom: 1px solid #111827;
+      text-align: right;
+    }
+    .markets-table th:first-child,
+    .markets-table td:first-child {
+      text-align: left;
+    }
+
+    @media (max-width: 900px) {
+      .detail-layout {
+        grid-template-columns: 1fr;
+      }
+      .detail-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      thead {
+        top: 132px;
+      }
+      .auth-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .header-top,
+      .subnav {
+        align-items: stretch;
+      }
+      .header-actions,
+      .global-metrics {
+        justify-content: flex-start;
+      }
+      .search-box {
+        width: 100%;
+        min-width: 0;
+      }
+    }
+
+    .agg-form {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      margin-bottom: 4px;
+    }
+    .agg-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-width: 180px;
+      position: relative;
+    }
+    .agg-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .agg-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: #0f172a;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      z-index: 30;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    }
+    .agg-dropdown.open { display: block; }
+    .agg-dropdown-item {
+      padding: 8px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.12s;
+    }
+    .agg-dropdown-item:hover { background: #1f2937; }
+    .agg-dropdown-item img { width: 18px; height: 18px; border-radius: 999px; }
+
+    .agg-platforms {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .agg-platform-card {
+      border-radius: 14px;
+      border: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, #111827 0, #020617 65%);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      transition: border-color 0.18s;
+    }
+    .agg-platform-card.best {
+      border-color: var(--accent);
+      box-shadow: 0 0 28px rgba(251,191,36,0.25), var(--shadow-soft);
+    }
+    .agg-best-badge {
+      position: absolute;
+      top: -10px;
+      right: 14px;
+      background: linear-gradient(135deg, var(--accent) 0%, #f59e0b 100%);
+      color: #111827;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+    }
+    .agg-platform-name {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .agg-platform-logo {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      object-fit: contain;
+      background: #1f2937;
+    }
+    .agg-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .agg-row span:last-child { color: var(--text-main); font-weight: 500; }
+    .agg-price-big {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .agg-total {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .agg-total span { color: var(--positive); font-weight: 600; }
+    .agg-buy-btn {
+      margin-top: 6px;
+      padding: 9px 0;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s;
+      text-decoration: none;
+      display: block;
+    }
+    .agg-buy-btn:hover {
+      background: var(--accent);
+      color: #111827;
+    }
+    .agg-loading {
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 20px 0;
+    }
+    .agg-error {
+      color: var(--negative);
+      font-size: 13px;
+      padding: 12px 0;
+    }
+    .agg-summary {
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      background: #0f172a;
+      font-size: 13px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .agg-summary b { color: var(--accent); }
+
+    .ai-fab {      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 50;
+      width: 54px;
+      height: 54px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent) 0%, #f59e0b 100%);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 28px rgba(251, 191, 36, 0.55), 0 8px 24px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #111827;
+      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+    }
+    .ai-fab:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 38px rgba(251, 191, 36, 0.75), 0 10px 30px rgba(0,0,0,0.55);
+    }
+
+    .ai-panel {
+      position: fixed;
+      bottom: 94px;
+      right: 28px;
+      z-index: 50;
+      width: min(420px, calc(100vw - 32px));
+      height: 520px;
+      border-radius: 18px;
+      border: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, #111827 0, #020617 65%);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.75);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .ai-panel.open {
+      display: flex;
+    }
+    .ai-panel-header {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .ai-panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-panel-title span {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(251,191,36,0.5);
+    }
+    .ai-panel-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #020617;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease-out;
+    }
+    .ai-panel-close:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .ai-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: #1f2937 transparent;
+    }
+    .ai-msg {
+      max-width: 88%;
+      padding: 10px 13px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .ai-msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--accent) 0%, #f59e0b 100%);
+      color: #111827;
+      border-bottom-right-radius: 4px;
+    }
+    .ai-msg.assistant {
+      align-self: flex-start;
+      background: #0f172a;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      border-bottom-left-radius: 4px;
+    }
+    .ai-msg.thinking {
+      align-self: flex-start;
+      background: #0f172a;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-style: italic;
+      border-bottom-left-radius: 4px;
+    }
+    .ai-input-row {
+      padding: 10px 12px 12px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .ai-input {
+      flex: 1;
+      padding: 10px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #020617;
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+      transition: all 0.18s ease-out;
+    }
+    .ai-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(251,191,36,0.1);
+    }
+    .ai-send {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent) 0%, #f59e0b 100%);
+      color: #111827;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s ease-out;
+    }
+    .ai-send:hover {
+      transform: scale(1.08);
+    }
+    .ai-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="authModal" class="auth-modal active">
+    <div class="auth-card">
+      <button id="closeAuthModal" class="auth-close" type="button">✕</button>
+      <div class="auth-card-header">
+        <div class="auth-logo-icon">◈</div>
+        <h2 id="authTitle" class="auth-card-title">Day<span>Flow</span></h2>
+        <div id="authSubtitle" class="auth-card-subtitle">
+          Willkommen zurück. Melde dich an oder erstelle ein neues Konto.
+        </div>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="showLoginTab" class="auth-tab active" type="button">Login</button>
+        <button id="showRegisterTab" class="auth-tab" type="button">Registrieren</button>
+      </div>
+
+      <form id="loginForm" class="auth-form active">
+        <div id="loginMessage" class="auth-message"></div>
+        <div class="auth-field">
+          <label id="loginUsernameLabel" class="auth-label" for="loginUsername">Benutzername</label>
+          <input id="loginUsername" class="auth-input" type="text" placeholder="z. B. maxmustermann" autocomplete="username" required />
+        </div>
+        <div class="auth-field">
+          <label id="loginPasswordLabel" class="auth-label" for="loginPassword">Passwort</label>
+          <input id="loginPassword" class="auth-input" type="password" placeholder="Dein Passwort" autocomplete="current-password" required />
+        </div>
+        <button id="loginSubmitButton" class="auth-button primary auth-submit" type="submit">Jetzt einloggen</button>
+      </form>
+
+      <form id="registerForm" class="auth-form">
+        <div id="registerMessage" class="auth-message"></div>
+        <div class="auth-grid">
+          <div class="auth-field">
+            <label id="registerFirstNameLabel" class="auth-label" for="registerFirstName">Vorname</label>
+            <input id="registerFirstName" class="auth-input" type="text" placeholder="Vorname" autocomplete="given-name" required />
+          </div>
+          <div class="auth-field">
+            <label id="registerLastNameLabel" class="auth-label" for="registerLastName">Nachname</label>
+            <input id="registerLastName" class="auth-input" type="text" placeholder="Nachname" autocomplete="family-name" required />
+          </div>
+          <div class="auth-field full">
+            <label id="registerUsernameLabel" class="auth-label" for="registerUsername">Benutzername</label>
+            <input id="registerUsername" class="auth-input" type="text" placeholder="Benutzername wählen" autocomplete="username" required />
+          </div>
+          <div class="auth-field full">
+            <label id="registerPasswordLabel" class="auth-label" for="registerPassword">Passwort</label>
+            <input id="registerPassword" class="auth-input" type="password" placeholder="Mindestens 6 Zeichen" autocomplete="new-password" required />
+          </div>
+        </div>
+        <button id="registerSubmitButton" class="auth-button primary auth-submit" type="submit">Konto erstellen</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="auth-modal">
+    <div class="auth-card">
+      <button id="closeSettingsModal" class="auth-close" type="button">✕</button>
+      <div class="auth-card-header">
+        <h2 id="settingsTitle" class="auth-card-title">⚙ <span>Einstellungen</span></h2>        <div id="settingsSubtitle" class="auth-card-subtitle">
+          Passe Sprache und Kontooptionen für dein Dashboard an.
+        </div>
+      </div>
+      <div class="auth-form active">
+        <div class="settings-row">
+          <label id="languageLabel" class="auth-label" for="languageSelect">Sprache</label>
+          <select id="languageSelect" class="settings-select">
+            <option value="de">Deutsch</option>
+            <option value="en">English</option>
+            <option value="it">Italiano</option>
+            <option value="fr">Français</option>
+          </select>
+        </div>
+
+        <div style="border-top:1px solid #1f2937;margin:14px 0 12px;"></div>
+        <div class="auth-label" style="margin-bottom:10px;font-size:13px;color:#e5e7eb;font-weight:600;">Benutzername ändern</div>
+        <div id="settingsUsernameMessage" class="auth-message"></div>
+        <div class="settings-row">
+          <label class="auth-label" for="settingsNewUsername">Neuer Benutzername</label>
+          <input id="settingsNewUsername" class="auth-input" type="text" placeholder="Neuer Benutzername" autocomplete="off" />
+        </div>
+        <div class="settings-row">
+          <label class="auth-label" for="settingsUsernamePassword">Passwort bestätigen</label>
+          <input id="settingsUsernamePassword" class="auth-input" type="password" placeholder="Dein aktuelles Passwort" autocomplete="current-password" />
+        </div>
+        <button id="settingsChangeUsernameBtn" class="auth-button primary" type="button" style="width:100%;margin-bottom:14px;">Benutzername speichern</button>
+
+        <div style="border-top:1px solid #1f2937;margin:0 0 12px;"></div>
+        <div class="auth-label" style="margin-bottom:10px;font-size:13px;color:#e5e7eb;font-weight:600;">Passwort ändern</div>
+        <div id="settingsPasswordMessage" class="auth-message"></div>
+        <div class="settings-row">
+          <label class="auth-label" for="settingsOldPassword">Aktuelles Passwort</label>
+          <input id="settingsOldPassword" class="auth-input" type="password" placeholder="Aktuelles Passwort" autocomplete="current-password" />
+        </div>
+        <div class="settings-row">
+          <label class="auth-label" for="settingsNewPassword">Neues Passwort</label>
+          <input id="settingsNewPassword" class="auth-input" type="password" placeholder="Mindestens 6 Zeichen" autocomplete="new-password" />
+        </div>
+        <button id="settingsChangePasswordBtn" class="auth-button primary" type="button" style="width:100%;margin-bottom:14px;">Passwort speichern</button>
+
+        <div style="border-top:1px solid #1f2937;margin:0 0 12px;"></div>
+        <div class="settings-actions">
+          <button id="settingsLogoutButton" class="auth-button" type="button">Logout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="header-top">
+      <div class="logo"><div class="logo-icon">◈</div><div class="logo-text">Day<span>Flow</span></div></div>
+
+      <div class="header-actions">
+        <div class="global-metrics" id="globalMetrics">
+          <div class="metric-card">
+            <span class="metric-label">Lade globale Daten...</span>
+          </div>
+        </div>
+
+        <button id="openSettingsButton" class="auth-button icon-button" type="button" title="Einstellungen">⚙</button>
+
+        <div class="auth-status">
+          <div id="authGuest" class="auth-guest">
+            <span id="authGuestText">Nicht eingeloggt</span>
+            <button id="openAuthModal" class="auth-button" type="button">Login / Registrierung</button>
+          </div>
+
+          <div id="authUser" class="auth-user">
+            <div id="authAvatar" class="auth-avatar">CB</div>
+            <div class="auth-user-text">
+              <div id="authUserName" class="auth-user-name">-</div>
+              <div id="authUserSub" class="auth-user-sub">Lokal angemeldet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subnav">
+      <div class="subnav-left">
+        <button id="homeButton" class="pill" type="button">⌂ Startseite</button>
+        <div class="pill active" data-mode="all">Alle Coins</div>
+        <div class="pill" data-mode="gainers">Top Gainer</div>
+        <div class="pill" data-mode="losers">Top Loser</div>
+        <div class="pill" data-mode="watchlist">Watchlist</div>
+        <button id="aggregatorButton" class="pill" type="button" style="border-color:var(--accent);color:var(--accent);">⚖ Preisvergleich</button>
+      </div>
+      <input id="searchInput" class="search-box" placeholder="Suche nach Name oder Symbol..." />
+    </div>
+  </header>
+
+  <main>
+    <section id="aggregatorView" style="display:none;">
+      <h1 style="font-size:19px;margin:0 0 4px;">⚖ Krypto Preisvergleich</h1>
+      <div class="subtitle" style="margin-bottom:18px;">Finde die günstigste Plattform für deinen Kauf – Echtzeit-Preise von Binance, Kraken & Coinbase.</div>
+
+      <div class="agg-form">
+        <div class="agg-field">
+          <label class="agg-label">Kryptowährung</label>
+          <input id="aggCoinInput" class="search-box" style="min-width:0;width:100%;" placeholder="z. B. BTC, ETH, SOL..." autocomplete="off" />
+          <div id="aggCoinDropdown" class="agg-dropdown"></div>
+        </div>
+        <div class="agg-field">
+          <label class="agg-label">Betrag in USD</label>
+          <input id="aggAmount" class="search-box" style="min-width:0;width:100%;" type="number" min="1" placeholder="z. B. 1000" />
+        </div>
+        <button id="aggSearchBtn" class="auth-button primary" style="align-self:flex-end;padding:8px 22px;white-space:nowrap;">Vergleichen</button>
+      </div>
+
+      <div id="aggResult" style="margin-top:20px;"></div>
+    </section>
+
+    <section id="homeView">
+      <h1 id="homeTitle">Heutige Kryptowährungspreise nach Marktkapitalisierung</h1>
+      <div class="subtitle" id="marketSummary">
+        Lade Marktdaten...
+      </div>
+
+      <div class="table-loading">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th id="thName">Name</th>
+              <th id="thPrice">Preis</th>
+              <th>1h %</th>
+              <th>24h %</th>
+              <th>7d %</th>
+              <th id="thMarketCap">Marktkap.</th>
+              <th id="thVolume">Volumen (24h)</th>
+              <th id="thSupply">Umlaufende Menge</th>
+            </tr>
+          </thead>
+          <tbody id="coinsTableBody">
+            <!-- Skeleton Loaders -->
+            <tr class="skeleton-row"></tr>
+            <tr class="skeleton-row"></tr>
+            <tr class="skeleton-row"></tr>
+            <tr class="skeleton-row"></tr>
+            <tr class="skeleton-row"></tr>
+            <tr class="skeleton-row"></tr>
+            <tr class="skeleton-row"></tr>
+            <tr class="skeleton-row"></tr>
+            <tr class="skeleton-row"></tr>
+            <tr class="skeleton-row"></tr>
+          </tbody>
+        </table>
+        <div id="tableLoader" class="loading-overlay" style="display: none;">
+          <div class="spinner"></div>
+          <div class="loading-text" id="loadingText">Lade Kryptowährungen...</div>
+        </div>
+      </div>
+
+      <div class="footer-note" id="footerNote">
+        Daten werden von CoinGecko & Binance geladen. Werte können leicht von CoinMarketCap abweichen.
+      </div>
+    </section>
+
+    <section id="detailView">
+      <button id="backToHome" class="back-button">← Zurück</button>
+
+      <div class="detail-hero">
+        <div class="detail-hero-left">
+          <div class="detail-coin-identity">
+            <img id="detailIcon" src="" alt="" style="width:36px;height:36px;border-radius:999px;display:none;" />
+            <div>
+              <div class="detail-name" id="detailName">-</div>
+              <div class="detail-symbol" id="detailSymbol">-</div>
+            </div>
+            <div class="detail-rank-badge" id="detailRankBadge">#-</div>
+          </div>
+          <div class="detail-price-row">
+            <span class="detail-price" id="detailPrice">-</span>
+            <span class="detail-change-badge" id="detailChange">-</span>
+          </div>
+          <div class="detail-hl-row">
+            <span class="muted" style="font-size:11px;">24h Tief: <span id="detailLow24">-</span></span>
+            <div class="detail-range-bar"><div class="detail-range-fill" id="detailRangeFill"></div></div>
+            <span class="muted" style="font-size:11px;">24h Hoch: <span id="detailHigh24">-</span></span>
+          </div>
+        </div>
+        <div class="detail-stats-grid">
+          <div class="stat-card">
+            <div class="stat-label" id="detailMcapLabel">Marktkapitalisierung</div>
+            <div class="stat-value" id="detailMcap">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label" id="detailVolumeLabel">24h Volumen</div>
+            <div class="stat-value" id="detailVolume">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label" id="detailSupplyLabel">Umlaufende Menge</div>
+            <div class="stat-value" id="detailSupply">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">24h Veränderung</div>
+            <div class="stat-value" id="detailChange24Stat">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">7d Veränderung</div>
+            <div class="stat-value" id="detailChange7d">-</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label" id="detailRankLabel">Rang</div>
+            <div class="stat-value" id="detailRank">-</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-layout">
+        <div class="chart-card">
+          <div class="chart-header">
+            <span id="chartHeaderTitle">Preis‑Chart (1‑Min Candles, Binance)</span>
+            <span class="muted" id="chartInfo">Live‑Updates via WebSocket</span>
+          </div>
+          <div id="chartContainer"></div>
+          <div class="muted" id="chartError" style="margin-top:6px;"></div>
+        </div>
+        <div class="markets-card">
+          <div class="chart-header">
+            <span id="marketsHeaderTitle">Markets</span>
+            <span class="muted" id="marketsHeaderSub">Binance Live</span>
+          </div>
+          <table class="markets-table" id="marketsTable">
+            <thead>
+              <tr>
+                <th id="marketsThExchange">Exchange</th>
+                <th id="marketsThType">Typ</th>
+                <th id="marketsThPair">Pair</th>
+                <th id="marketsThPrice">Preis</th>
+                <th id="marketsThVolume">Volumen (24h)</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="detail-tabs">
+        <div class="detail-tab active" data-tab="overview">Overview</div>
+        <div class="detail-tab" data-tab="markets">Markets</div>
+        <div class="detail-tab" data-tab="news">News</div>
+      </div>
+      <div class="detail-tab-content" id="detailTabContent"></div>
+    </section>
+  </main>
+
+  <button id="aiFab" class="ai-fab" title="AI Crypto Assistent">✦</button>
+
+  <div id="aiPanel" class="ai-panel">
+    <div class="ai-panel-header">
+      <div class="ai-panel-title">✦ <span>Crypto</span>AI</div>
+      <button id="aiPanelClose" class="ai-panel-close">✕</button>
+    </div>
+    <div id="aiMessages" class="ai-messages">
+      <div class="ai-msg assistant">Hallo! Ich bin dein Crypto-KI-Assistent. Frag mich alles über Bitcoin, Ethereum, Altcoins, Markttrends oder Krypto-Strategien.</div>
+    </div>
+    <div class="ai-input-row">
+      <input id="aiInput" class="ai-input" type="text" placeholder="Frag mich über Krypto..." autocomplete="off" />
+      <button id="aiSend" class="ai-send">➤</button>
+    </div>
+  </div>
+
+  <script>
+    const globalMetricsEl = document.getElementById("globalMetrics");
+    const coinsTableBody = document.getElementById("coinsTableBody");
+    const tableLoader = document.getElementById("tableLoader");
+    const loadingText = document.getElementById("loadingText");
+    const marketSummaryEl = document.getElementById("marketSummary");
+    const searchInput = document.getElementById("searchInput");
+    const footerNoteEl = document.getElementById("footerNote");
+
+    const homeView = document.getElementById("homeView");
+    const detailView = document.getElementById("detailView");
+    const backToHome = document.getElementById("backToHome");
+
+    const pills = document.querySelectorAll(".pill");
+    const homeButton = document.getElementById("homeButton");
+
+    const authModal = document.getElementById("authModal");
+    const openAuthModalBtn = document.getElementById("openAuthModal");
+    const closeAuthModalBtn = document.getElementById("closeAuthModal");
+    const showLoginTabBtn = document.getElementById("showLoginTab");
+    const showRegisterTabBtn = document.getElementById("showRegisterTab");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const loginMessage = document.getElementById("loginMessage");
+    const registerMessage = document.getElementById("registerMessage");
+    const authGuest = document.getElementById("authGuest");
+    const authUser = document.getElementById("authUser");
+    const authUserName = document.getElementById("authUserName");
+    const authAvatar = document.getElementById("authAvatar");
+
+    const settingsModal = document.getElementById("settingsModal");
+    const openSettingsButton = document.getElementById("openSettingsButton");
+    const closeSettingsModal = document.getElementById("closeSettingsModal");
+    const settingsLogoutButton = document.getElementById("settingsLogoutButton");
+    const languageSelect = document.getElementById("languageSelect");
+
+    let allCoins = [];
+    let currentMode = "all";
+    let watchlist = [];
+    let currentDetailCoin = null;
+    let currentUser = null;
+    let currentLanguage = "de";
+
+    const detailNameEl = document.getElementById("detailName");
+    const detailSymbolEl = document.getElementById("detailSymbol");
+    const detailPriceEl = document.getElementById("detailPrice");
+    const detailChangeEl = document.getElementById("detailChange");
+    const detailMcapEl = document.getElementById("detailMcap");
+    const detailVolumeEl = document.getElementById("detailVolume");
+    const detailSupplyEl = document.getElementById("detailSupply");
+    const detailRankEl = document.getElementById("detailRank");
+    const marketsTableBody = document.getElementById("marketsTable").querySelector("tbody");
+    const detailTabs = document.querySelectorAll(".detail-tab");
+    const detailTabContent = document.getElementById("detailTabContent");
+    const chartErrorEl = document.getElementById("chartError");
+
+    let chart = null;
+    let candleSeries = null;
+    let ws = null;
+
+    const STORAGE_KEYS = {
+      users: "dayflow_users",
+      session: "dayflow_session",
+      watchlistPrefix: "dayflow_watchlist_",
+      language: "dayflow_language",
+    };
+
+    const translations = {
+      de: {
+        pageTitle: "DayFlow – Live Krypto Dashboard",
+        authTitle: "Crypto<span>Board</span> Login",
+        authSubtitle: "Lokaler Zugang für dein persönliches Krypto-Dashboard. Registriere dich mit Vorname, Nachname und Passwort oder melde dich mit deinem bestehenden Konto an.",
+        loginTab: "Login",
+        registerTab: "Registrieren",
+        username: "Benutzername",
+        password: "Passwort",
+        firstName: "Vorname",
+        lastName: "Nachname",
+        loginPlaceholder: "z. B. maxmustermann",
+        passwordPlaceholder: "Dein Passwort",
+        firstNamePlaceholder: "Vorname",
+        lastNamePlaceholder: "Nachname",
+        usernamePlaceholder: "Benutzername wählen",
+        registerPasswordPlaceholder: "Mindestens 6 Zeichen",
+        loginSubmit: "Jetzt einloggen",
+        registerSubmit: "Konto erstellen",
+        notLoggedIn: "Nicht eingeloggt",
+        loginRegister: "Login / Registrierung",
+        loggedInLocal: "Lokal angemeldet",
+        settingsTitle: "⚙ <span>Einstellungen</span>",
+        settingsSubtitle: "Passe Sprache und Kontooptionen für dein Dashboard an.",
+        language: "Sprache",
+        logout: "Logout",
+        homeButton: "⌂ Startseite",
+        all: "Alle Coins",
+        gainers: "Top Gainer",
+        losers: "Top Loser",
+        watchlist: "Watchlist",
+        searchPlaceholder: "Suche nach Name oder Symbol...",
+        homeTitle: "Heutige Kryptowährungspreise nach Marktkapitalisierung",
+        thName: "Name",
+        thPrice: "Preis",
+        thMarketCap: "Marktkap.",
+        thVolume: "Volumen (24h)",
+        thSupply: "Umlaufende Menge",
+        footerLoaded: "Daten werden von CoinGecko & Binance geladen. Werte können leicht von CoinMarketCap abweichen.",
+        footerSource: "Datenquelle: CoinGecko (Markets, alle 5s) & Binance (Candles, Spot & Futures).",
+        detailBack: "← Zurück",
+        detailMcap: "Marktkapitalisierung",
+        detailVolume: "24h Volumen",
+        detailSupply: "Umlaufende Menge",
+        detailRank: "Rang",
+        chartHeader: "Preis‑Chart (1‑Min Candles, Binance)",
+        chartInfo: "500 Candles, Live‑Updates",
+        marketsHeader: "Markets (Spot + USDT‑M Futures)",
+        marketsHeaderSub: "Echte Binance‑Daten",
+        exchange: "Exchange",
+        type: "Typ",
+        pair: "Pair",
+        price: "Preis",
+        volume: "Volumen (24h)",
+        overview: "Overview",
+        markets: "Markets",
+        news: "News",
+        detailOverviewText: "Overview: Live‑Preis, Market Cap, Volumen und Supply des ausgewählten Coins. Der Chart zeigt echte 1‑Minuten‑Candles von Binance (500 Candles + Live‑Updates).",
+        detailMarketsText: "Markets: Rechts siehst du echte Binance‑Spot‑ und USDT‑M‑Futures‑Daten für dieses Symbol.",
+        detailNewsText: "News: Hier könntest du später echte News‑Feeds, On‑Chain‑Daten oder Social‑Sentiment integrieren.",
+        watchTitle: "Zur Watchlist hinzufügen",
+        emptyWatchlist: "Deine Watchlist ist noch leer. Klicke auf das Sternchen neben einer Kryptowährung, um sie hinzuzufügen.",
+        emptyResult: "Keine Kryptowährungen für diese Auswahl gefunden.",
+        marketCap: "Market Cap",
+        globalVolume: "24h Volumen",
+        coinsTop100: "Coins (Top 100)",
+        avgMarketChange: "Ø Marktveränderung (24h)",
+        globalLoading: "Lade globale Daten...",
+        globalSummary: "Die globale Krypto‑Marktkapitalisierung (Top 100) liegt bei {mcap}. 24h‑Veränderung: {change}.",
+        loginMissing: "Bitte Benutzername und Passwort eingeben.",
+        loginFailed: "Login fehlgeschlagen. Prüfe deine Daten.",
+        loginSuccess: "Erfolgreich eingeloggt.",
+        registerMissing: "Bitte alle Felder ausfüllen.",
+        registerPasswordShort: "Das Passwort muss mindestens 6 Zeichen haben.",
+        registerUsernameExists: "Dieser Benutzername ist bereits vergeben.",
+        registerSuccess: "Registrierung erfolgreich. Du bist jetzt eingeloggt.",
+        marketLoadError: "Fehler beim Laden der Marktdaten. Prüfe deine Internetverbindung oder versuche es später erneut.",
+        globalLoadError: "Fehler beim Laden der globalen Daten",
+        noMarketsFound: "Keine Binance‑Markets für dieses Symbol gefunden.",
+        marketsLoadError: "Fehler beim Laden der Binance‑Markets.",
+        wsError: "Live‑WebSocket von Binance konnte nicht verbunden werden.",
+        candleError: "Für dieses Symbol konnten keine Binance‑Candles geladen werden."
+      },
+      en: {
+        pageTitle: "DayFlow – Live Crypto Dashboard",
+        authTitle: "Crypto<span>Board</span> Login",
+        authSubtitle: "Local access for your personal crypto dashboard. Sign up with first name, last name and password or log in with your existing account.",
+        loginTab: "Login",
+        registerTab: "Register",
+        username: "Username",
+        password: "Password",
+        firstName: "First name",
+        lastName: "Last name",
+        loginPlaceholder: "e.g. maxmustermann",
+        passwordPlaceholder: "Your password",
+        firstNamePlaceholder: "First name",
+        lastNamePlaceholder: "Last name",
+        usernamePlaceholder: "Choose a username",
+        registerPasswordPlaceholder: "At least 6 characters",
+        loginSubmit: "Log in now",
+        registerSubmit: "Create account",
+        notLoggedIn: "Not logged in",
+        loginRegister: "Login / Register",
+        loggedInLocal: "Logged in locally",
+        settingsTitle: "⚙ <span>Settings</span>",
+        settingsSubtitle: "Adjust language and account options for your dashboard.",
+        language: "Language",
+        logout: "Logout",
+        homeButton: "⌂ Home",
+        all: "All coins",
+        gainers: "Top gainers",
+        losers: "Top losers",
+        watchlist: "Watchlist",
+        searchPlaceholder: "Search by name or symbol...",
+        homeTitle: "Today's cryptocurrency prices by market capitalization",
+        thName: "Name",
+        thPrice: "Price",
+        thMarketCap: "Market cap",
+        thVolume: "Volume (24h)",
+        thSupply: "Circulating supply",
+        footerLoaded: "Data is loaded from CoinGecko & Binance. Values may differ slightly from CoinMarketCap.",
+        footerSource: "Source: CoinGecko (markets, every 5s) & Binance (candles, spot & futures).",
+        detailBack: "← Back",
+        detailMcap: "Market capitalization",
+        detailVolume: "24h volume",
+        detailSupply: "Circulating supply",
+        detailRank: "Rank",
+        chartHeader: "Price chart (1-min candles, Binance)",
+        chartInfo: "500 candles, live updates",
+        marketsHeader: "Markets (Spot + USDT-M Futures)",
+        marketsHeaderSub: "Real Binance data",
+        exchange: "Exchange",
+        type: "Type",
+        pair: "Pair",
+        price: "Price",
+        volume: "Volume (24h)",
+        overview: "Overview",
+        markets: "Markets",
+        news: "News",
+        detailOverviewText: "Overview: Live price, market cap, volume and supply of the selected coin. The chart shows real 1-minute Binance candles (500 candles + live updates).",
+        detailMarketsText: "Markets: On the right you can see real Binance spot and USDT-M futures data for this symbol.",
+        detailNewsText: "News: Later you could integrate real news feeds, on-chain data or social sentiment here.",
+        watchTitle: "Add to watchlist",
+        emptyWatchlist: "Your watchlist is still empty. Click the star next to a cryptocurrency to add it.",
+        emptyResult: "No cryptocurrencies found for this selection.",
+        marketCap: "Market Cap",
+        globalVolume: "24h Volume",
+        coinsTop100: "Coins (Top 100)",
+        avgMarketChange: "Avg market change (24h)",
+        globalLoading: "Loading global data...",
+        globalSummary: "Global crypto market capitalization (top 100) is {mcap}. 24h change: {change}.",
+        loginMissing: "Please enter username and password.",
+        loginFailed: "Login failed. Check your credentials.",
+        loginSuccess: "Successfully logged in.",
+        registerMissing: "Please fill in all fields.",
+        registerPasswordShort: "Password must be at least 6 characters long.",
+        registerUsernameExists: "This username is already taken.",
+        registerSuccess: "Registration successful. You are now logged in.",
+        marketLoadError: "Error loading market data. Check your internet connection or try again later.",
+        globalLoadError: "Error loading global data",
+        noMarketsFound: "No Binance markets found for this symbol.",
+        marketsLoadError: "Error loading Binance markets.",
+        wsError: "Could not connect to Binance live WebSocket.",
+        candleError: "Could not load Binance candles for this symbol."
+      },
+      it: {
+        pageTitle: "CryptoBoard – Dashboard Crypto Live",
+        authTitle: "Crypto<span>Board</span> Login",
+        authSubtitle: "Accesso locale per la tua dashboard crypto personale. Registrati con nome, cognome e password oppure accedi con il tuo account esistente.",
+        loginTab: "Login",
+        registerTab: "Registrati",
+        username: "Nome utente",
+        password: "Password",
+        firstName: "Nome",
+        lastName: "Cognome",
+        loginPlaceholder: "es. maxmustermann",
+        passwordPlaceholder: "La tua password",
+        firstNamePlaceholder: "Nome",
+        lastNamePlaceholder: "Cognome",
+        usernamePlaceholder: "Scegli un nome utente",
+        registerPasswordPlaceholder: "Almeno 6 caratteri",
+        loginSubmit: "Accedi ora",
+        registerSubmit: "Crea account",
+        notLoggedIn: "Non connesso",
+        loginRegister: "Login / Registrazione",
+        loggedInLocal: "Accesso locale attivo",
+        settingsTitle: "⚙ <span>Impostazioni</span>",
+        settingsSubtitle: "Modifica lingua e opzioni dell'account per la tua dashboard.",
+        language: "Lingua",
+        logout: "Logout",
+        homeButton: "⌂ Home",
+        all: "Tutte le coin",
+        gainers: "Top rialzi",
+        losers: "Top ribassi",
+        watchlist: "Watchlist",
+        searchPlaceholder: "Cerca per nome o simbolo...",
+        homeTitle: "Prezzi delle criptovalute di oggi per capitalizzazione di mercato",
+        thName: "Nome",
+        thPrice: "Prezzo",
+        thMarketCap: "Cap. mercato",
+        thVolume: "Volume (24h)",
+        thSupply: "Offerta circolante",
+        footerLoaded: "I dati vengono caricati da CoinGecko e Binance. I valori possono differire leggermente da CoinMarketCap.",
+        footerSource: "Fonte: CoinGecko (mercati, ogni 5s) e Binance (candele, spot e futures).",
+        detailBack: "← Indietro",
+        detailMcap: "Capitalizzazione di mercato",
+        detailVolume: "Volume 24h",
+        detailSupply: "Offerta circolante",
+        detailRank: "Posizione",
+        chartHeader: "Grafico prezzo (candele 1 min, Binance)",
+        chartInfo: "500 candele, aggiornamenti live",
+        marketsHeader: "Mercati (Spot + Futures USDT-M)",
+        marketsHeaderSub: "Dati reali Binance",
+        exchange: "Exchange",
+        type: "Tipo",
+        pair: "Pair",
+        price: "Prezzo",
+        volume: "Volume (24h)",
+        overview: "Panoramica",
+        markets: "Mercati",
+        news: "Notizie",
+        detailOverviewText: "Panoramica: prezzo live, market cap, volume e offerta della coin selezionata. Il grafico mostra vere candele Binance a 1 minuto (500 candele + aggiornamenti live).",
+        detailMarketsText: "Mercati: a destra vedi dati reali Binance spot e futures USDT-M per questo simbolo.",
+        detailNewsText: "Notizie: qui in futuro potresti integrare feed di notizie reali, dati on-chain o sentiment social.",
+        watchTitle: "Aggiungi alla watchlist",
+        emptyWatchlist: "La tua watchlist è ancora vuota. Clicca sulla stella accanto a una criptovaluta per aggiungerla.",
+        emptyResult: "Nessuna criptovaluta trovata per questa selezione.",
+        marketCap: "Market Cap",
+        globalVolume: "Volume 24h",
+        coinsTop100: "Coin (Top 100)",
+        avgMarketChange: "Variazione media mercato (24h)",
+        globalLoading: "Caricamento dati globali...",
+        globalSummary: "La capitalizzazione globale crypto (top 100) è {mcap}. Variazione 24h: {change}.",
+        loginMissing: "Inserisci nome utente e password.",
+        loginFailed: "Accesso non riuscito. Controlla i tuoi dati.",
+        loginSuccess: "Accesso effettuato con successo.",
+        registerMissing: "Compila tutti i campi.",
+        registerPasswordShort: "La password deve contenere almeno 6 caratteri.",
+        registerUsernameExists: "Questo nome utente è già in uso.",
+        registerSuccess: "Registrazione completata. Ora sei connesso.",
+        marketLoadError: "Errore durante il caricamento dei dati di mercato. Controlla la connessione o riprova più tardi.",
+        globalLoadError: "Errore durante il caricamento dei dati globali",
+        noMarketsFound: "Nessun mercato Binance trovato per questo simbolo.",
+        marketsLoadError: "Errore durante il caricamento dei mercati Binance.",
+        wsError: "Impossibile connettersi al WebSocket live di Binance.",
+        candleError: "Impossibile caricare le candele Binance per questo simbolo."
+      },
+      fr: {
+        pageTitle: "CryptoBoard – Tableau Crypto en Direct",
+        authTitle: "Crypto<span>Board</span> Connexion",
+        authSubtitle: "Accès local pour ton tableau crypto personnel. Inscris-toi avec prénom, nom et mot de passe ou connecte-toi avec ton compte existant.",
+        loginTab: "Connexion",
+        registerTab: "S'inscrire",
+        username: "Nom d'utilisateur",
+        password: "Mot de passe",
+        firstName: "Prénom",
+        lastName: "Nom",
+        loginPlaceholder: "ex. maxmustermann",
+        passwordPlaceholder: "Ton mot de passe",
+        firstNamePlaceholder: "Prénom",
+        lastNamePlaceholder: "Nom",
+        usernamePlaceholder: "Choisir un nom d'utilisateur",
+        registerPasswordPlaceholder: "Au moins 6 caractères",
+        loginSubmit: "Se connecter",
+        registerSubmit: "Créer un compte",
+        notLoggedIn: "Non connecté",
+        loginRegister: "Connexion / Inscription",
+        loggedInLocal: "Connecté localement",
+        settingsTitle: "⚙ <span>Paramètres</span>",
+        settingsSubtitle: "Ajuste la langue et les options du compte pour ton tableau de bord.",
+        language: "Langue",
+        logout: "Déconnexion",
+        homeButton: "⌂ Accueil",
+        all: "Toutes les coins",
+        gainers: "Top hausses",
+        losers: "Top baisses",
+        watchlist: "Watchlist",
+        searchPlaceholder: "Rechercher par nom ou symbole...",
+        homeTitle: "Prix des cryptomonnaies aujourd'hui par capitalisation boursière",
+        thName: "Nom",
+        thPrice: "Prix",
+        thMarketCap: "Cap. boursière",
+        thVolume: "Volume (24h)",
+        thSupply: "Offre en circulation",
+        footerLoaded: "Les données sont chargées depuis CoinGecko et Binance. Les valeurs peuvent légèrement différer de CoinMarketCap.",
+        footerSource: "Source : CoinGecko (marchés, toutes les 5s) et Binance (bougies, spot et futures).",
+        detailBack: "← Retour",
+        detailMcap: "Capitalisation boursière",
+        detailVolume: "Volume 24h",
+        detailSupply: "Offre en circulation",
+        detailRank: "Rang",
+        chartHeader: "Graphique des prix (bougies 1 min, Binance)",
+        chartInfo: "500 bougies, mises à jour en direct",
+        marketsHeader: "Marchés (Spot + Futures USDT-M)",
+        marketsHeaderSub: "Données Binance réelles",
+        exchange: "Exchange",
+        type: "Type",
+        pair: "Pair",
+        price: "Prix",
+        volume: "Volume (24h)",
+        overview: "Aperçu",
+        markets: "Marchés",
+        news: "Actualités",
+        detailOverviewText: "Aperçu : prix en direct, capitalisation, volume et offre de la coin sélectionnée. Le graphique affiche de vraies bougies Binance d'une minute (500 bougies + mises à jour en direct).",
+        detailMarketsText: "Marchés : à droite, tu vois les vraies données Binance spot et futures USDT-M pour ce symbole.",
+        detailNewsText: "Actualités : ici tu pourras plus tard intégrer de vrais flux d'actualités, données on-chain ou sentiment social.",
+        watchTitle: "Ajouter à la watchlist",
+        emptyWatchlist: "Ta watchlist est encore vide. Clique sur l'étoile à côté d'une cryptomonnaie pour l'ajouter.",
+        emptyResult: "Aucune cryptomonnaie trouvée pour cette sélection.",
+        marketCap: "Market Cap",
+        globalVolume: "Volume 24h",
+        coinsTop100: "Coins (Top 100)",
+        avgMarketChange: "Variation moyenne du marché (24h)",
+        globalLoading: "Chargement des données globales...",
+        globalSummary: "La capitalisation crypto mondiale (top 100) est de {mcap}. Variation sur 24h : {change}.",
+        loginMissing: "Veuillez saisir le nom d'utilisateur et le mot de passe.",
+        loginFailed: "Échec de la connexion. Vérifie tes informations.",
+        loginSuccess: "Connexion réussie.",
+        registerMissing: "Veuillez remplir tous les champs.",
+        registerPasswordShort: "Le mot de passe doit contenir au moins 6 caractères.",
+        registerUsernameExists: "Ce nom d'utilisateur est déjà pris.",
+        registerSuccess: "Inscription réussie. Tu es maintenant connecté.",
+        marketLoadError: "Erreur lors du chargement des données du marché. Vérifie ta connexion internet ou réessaie plus tard.",
+        globalLoadError: "Erreur lors du chargement des données globales",
+        noMarketsFound: "Aucun marché Binance trouvé pour ce symbole.",
+        marketsLoadError: "Erreur lors du chargement des marchés Binance.",
+        wsError: "Impossible de se connecter au WebSocket en direct de Binance.",
+        candleError: "Impossible de charger les bougies Binance pour ce symbole."
+      }
+    };
+
+    function t(key) {
+      return translations[currentLanguage][key] ?? translations.de[key] ?? key;
+    }
+
+    function applyTemplate(str, values) {
+      return str.replace(/\{(\w+)\}/g, (_, key) => values[key] ?? "");
+    }
+
+    function setLanguage(lang) {
+      currentLanguage = translations[lang] ? lang : "de";
+      localStorage.setItem(STORAGE_KEYS.language, currentLanguage);
+      document.documentElement.lang = currentLanguage;
+      languageSelect.value = currentLanguage;
+      applyTranslations();
+      renderGlobalFromCoins(allCoins);
+      renderTable(getFilteredCoins());
+      if (currentDetailCoin) {
+        updateDetailUI(currentDetailCoin);
+        updateDetailTabContent(document.querySelector(".detail-tab.active")?.dataset.tab || "overview");
+      }
+    }
+
+    function applyTranslations() {
+      document.title = t("pageTitle");
+      document.getElementById("authTitle").innerHTML = t("authTitle");
+      document.getElementById("authSubtitle").textContent = t("authSubtitle");
+      showLoginTabBtn.textContent = t("loginTab");
+      showRegisterTabBtn.textContent = t("registerTab");
+      document.getElementById("loginUsernameLabel").textContent = t("username");
+      document.getElementById("loginPasswordLabel").textContent = t("password");
+      document.getElementById("registerFirstNameLabel").textContent = t("firstName");
+      document.getElementById("registerLastNameLabel").textContent = t("lastName");
+      document.getElementById("registerUsernameLabel").textContent = t("username");
+      document.getElementById("registerPasswordLabel").textContent = t("password");
+      document.getElementById("loginUsername").placeholder = t("loginPlaceholder");
+      document.getElementById("loginPassword").placeholder = t("passwordPlaceholder");
+      document.getElementById("registerFirstName").placeholder = t("firstNamePlaceholder");
+      document.getElementById("registerLastName").placeholder = t("lastNamePlaceholder");
+      document.getElementById("registerUsername").placeholder = t("usernamePlaceholder");
+      document.getElementById("registerPassword").placeholder = t("registerPasswordPlaceholder");
+      document.getElementById("loginSubmitButton").textContent = t("loginSubmit");
+      document.getElementById("registerSubmitButton").textContent = t("registerSubmit");
+      document.getElementById("authGuestText").textContent = t("notLoggedIn");
+      openAuthModalBtn.textContent = t("loginRegister");
+      document.getElementById("authUserSub").textContent = t("loggedInLocal");
+      document.getElementById("settingsTitle").innerHTML = t("settingsTitle");
+      document.getElementById("settingsSubtitle").textContent = t("settingsSubtitle");
+      document.getElementById("languageLabel").textContent = t("language");
+      settingsLogoutButton.textContent = t("logout");
+      homeButton.textContent = t("homeButton");
+      document.querySelector('.pill[data-mode="all"]').textContent = t("all");
+      document.querySelector('.pill[data-mode="gainers"]').textContent = t("gainers");
+      document.querySelector('.pill[data-mode="losers"]').textContent = t("losers");
+      document.querySelector('.pill[data-mode="watchlist"]').textContent = t("watchlist");
+      searchInput.placeholder = t("searchPlaceholder");
+      document.getElementById("homeTitle").textContent = t("homeTitle");
+      document.getElementById("thName").textContent = t("thName");
+      document.getElementById("thPrice").textContent = t("thPrice");
+      document.getElementById("thMarketCap").textContent = t("thMarketCap");
+      document.getElementById("thVolume").textContent = t("thVolume");
+      document.getElementById("thSupply").textContent = t("thSupply");
+      if (!allCoins.length) {
+        footerNoteEl.textContent = t("footerLoaded");
+      }
+      backToHome.textContent = t("detailBack");
+      document.getElementById("detailMcapLabel").textContent = t("detailMcap");
+      document.getElementById("detailVolumeLabel").textContent = t("detailVolume");
+      document.getElementById("detailSupplyLabel").textContent = t("detailSupply");
+      document.getElementById("detailRankLabel").textContent = t("detailRank");
+      document.getElementById("chartHeaderTitle").textContent = t("chartHeader");
+      document.getElementById("chartInfo").textContent = t("chartInfo");
+      document.getElementById("marketsHeaderTitle").textContent = t("marketsHeader");
+      document.getElementById("marketsHeaderSub").textContent = t("marketsHeaderSub");
+      document.getElementById("marketsThExchange").textContent = t("exchange");
+      document.getElementById("marketsThType").textContent = t("type");
+      document.getElementById("marketsThPair").textContent = t("pair");
+      document.getElementById("marketsThPrice").textContent = t("price");
+      document.getElementById("marketsThVolume").textContent = t("volume");
+      document.querySelector('.detail-tab[data-tab="overview"]').textContent = t("overview");
+      document.querySelector('.detail-tab[data-tab="markets"]').textContent = t("markets");
+      document.querySelector('.detail-tab[data-tab="news"]').textContent = t("news");
+      updateDetailTabContent(document.querySelector(".detail-tab.active")?.dataset.tab || "overview");
+    }
+
+    const STORAGE_USERS = "dayflow_users";
+
+    function formatNumber(num, decimals = 2) {
+      if (num === null || num === undefined || isNaN(num)) return "-";
+      return Number(num).toLocaleString("en-US", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      });
+    }
+
+    function formatBigNumber(num) {
+      if (num === null || num === undefined || isNaN(num)) return "-";
+      const n = Number(num);
+      if (n >= 1e12) return (n / 1e12).toFixed(2) + "T";
+      if (n >= 1e9) return (n / 1e9).toFixed(2) + "B";
+      if (n >= 1e6) return (n / 1e6).toFixed(2) + "M";
+      if (n >= 1e3) return (n / 1e3).toFixed(2) + "K";
+      return n.toFixed(2);
+    }
+
+    function changeClass(val) {
+      if (val === null || val === undefined || isNaN(val)) return "";
+      return val >= 0 ? "change-pos" : "change-neg";
+    }
+
+    function changeText(val) {
+      if (val === null || val === undefined || isNaN(val)) return "-";
+      const n = Number(val);
+      const sign = n > 0 ? "+" : "";
+      return sign + n.toFixed(2) + "%";
+    }
+
+    function getUsers() {
+      try {
+        const raw = localStorage.getItem(STORAGE_USERS);
+        return raw ? JSON.parse(raw) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
+    }
+
+    function getSession() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEYS.session);
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function saveSession(user) {
+      localStorage.setItem(STORAGE_KEYS.session, JSON.stringify({
+        username: user.username,
+      }));
+    }
+
+    function clearSession() {
+      localStorage.removeItem(STORAGE_KEYS.session);
+    }
+
+    function getInitials(firstName, lastName) {
+      const first = (firstName || "").trim().charAt(0).toUpperCase();
+      const last = (lastName || "").trim().charAt(0).toUpperCase();
+      return (first + last) || "CB";
+    }
+
+    function setAuthMessage(element, text, type = "") {
+      element.textContent = text || "";
+      element.className = "auth-message";
+      if (type) element.classList.add(type);
+    }
+
+    function switchAuthTab(mode) {
+      const isLogin = mode === "login";
+      showLoginTabBtn.classList.toggle("active", isLogin);
+      showRegisterTabBtn.classList.toggle("active", !isLogin);
+      loginForm.classList.toggle("active", isLogin);
+      registerForm.classList.toggle("active", !isLogin);
+      setAuthMessage(loginMessage, "");
+      setAuthMessage(registerMessage, "");
+    }
+
+    function openAuthModal(defaultTab = "login") {
+      switchAuthTab(defaultTab);
+      authModal.classList.add("active");
+    }
+
+    function closeAuthModal() {
+      if (!currentUser) return;
+      authModal.classList.remove("active");
+    }
+
+    function openSettings() {
+      settingsModal.classList.add("active");
+    }
+
+    function closeSettings() {
+      settingsModal.classList.remove("active");
+    }
+
+    function updateAuthUI() {
+      if (currentUser) {
+        authGuest.classList.add("hidden");
+        authUser.classList.add("active");
+        authUserName.textContent = currentUser.firstName + " " + currentUser.lastName;
+        authAvatar.textContent = getInitials(currentUser.firstName, currentUser.lastName);
+        authModal.classList.remove("active");
+      } else {
+        authGuest.classList.remove("hidden");
+        authUser.classList.remove("active");
+        authUserName.textContent = "-";
+        authAvatar.textContent = "CB";
+        authModal.classList.add("active");
+        settingsModal.classList.remove("active");
+      }
+    }
+
+    function loadCurrentUser() {
+      const users = getUsers();
+      const session = getSession();
+      if (!session || !session.username) {
+        currentUser = null;
+        return;
+      }
+      currentUser = users.find(user => user.username === session.username) || null;
+    }
+
+    function getWatchlistKey() {
+      return currentUser
+        ? STORAGE_KEYS.watchlistPrefix + currentUser.username
+        : STORAGE_KEYS.watchlistPrefix + "guest";
+    }
+
+    function loadWatchlist() {
+      try {
+        const raw = localStorage.getItem(getWatchlistKey());
+        watchlist = raw ? JSON.parse(raw) : [];
+      } catch {
+        watchlist = [];
+      }
+    }
+
+    function saveWatchlist() {
+      localStorage.setItem(getWatchlistKey(), JSON.stringify(watchlist));
+    }
+
+    function isInWatchlist(coin) {
+      return watchlist.includes(String(coin.id));
+    }
+
+    function toggleWatch(coin) {
+      const id = String(coin.id);
+      if (watchlist.includes(id)) {
+        watchlist = watchlist.filter(x => x !== id);
+      } else {
+        watchlist.push(id);
+      }
+      saveWatchlist();
+      renderTable(getFilteredCoins());
+    }
+
+    function renderGlobalFromCoins(coins) {
+      if (!coins || coins.length === 0) return;
+      const totalMcap = coins.reduce((sum, c) => sum + (c.market_cap || 0), 0);
+      const totalVol = coins.reduce((sum, c) => sum + (c.total_volume || 0), 0);
+      const avgChange = coins.reduce((sum, c) => sum + (c.price_change_percentage_24h || 0), 0) / coins.length;
+
+      globalMetricsEl.innerHTML = "";
+
+      const items = [
+        {
+          label: t("marketCap"),
+          value: "$" + formatBigNumber(totalMcap),
+          change: avgChange,
+        },
+        {
+          label: t("globalVolume"),
+          value: "$" + formatBigNumber(totalVol),
+          change: null,
+        },
+        {
+          label: t("coinsTop100"),
+          value: coins.length.toString(),
+          change: null,
+        },
+        {
+          label: t("avgMarketChange"),
+          value: changeText(avgChange),
+          change: avgChange,
+        },
+      ];
+
+      items.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "metric-card";
+
+        const label = document.createElement("span");
+        label.className = "metric-label";
+        label.textContent = item.label;
+
+        const value = document.createElement("span");
+        value.className = "metric-value";
+        value.textContent = item.value;
+
+        card.appendChild(label);
+        card.appendChild(value);
+
+        if (item.change !== null && !isNaN(item.change)) {
+          const changeSpan = document.createElement("span");
+          changeSpan.className = "metric-value " + (item.change >= 0 ? "metric-change-pos" : "metric-change-neg");
+          changeSpan.textContent = changeText(item.change);
+          card.appendChild(changeSpan);
+        }
+
+        globalMetricsEl.appendChild(card);
+      });
+
+      marketSummaryEl.textContent = applyTemplate(t("globalSummary"), {
+        mcap: "$" + formatNumber(totalMcap, 0),
+        change: changeText(avgChange),
+      });
+    }
+
+    function renderTable(coins) {
+      coinsTableBody.innerHTML = "";
+
+      coins.forEach((coin, index) => {
+        const tr = document.createElement("tr");
+
+        tr.addEventListener("click", (e) => {
+          if (e.target && e.target.classList.contains("watch-icon")) return;
+          openDetail(coin.id);
+        });
+
+        const rankTd = document.createElement("td");
+        rankTd.innerHTML = `<span class="rank">${coin.market_cap_rank || index + 1}</span>`;
+        tr.appendChild(rankTd);
+
+        const nameTd = document.createElement("td");
+        nameTd.style.textAlign = "left";
+        nameTd.innerHTML = `
+          <div class="name-cell">
+            <div class="name-left">
+              <span class="watch-icon${isInWatchlist(coin) ? " watch-active" : ""}" title="${t("watchTitle")}">★</span>
+              <div>
+                <div>${coin.name}</div>
+                <div class="symbol">${coin.symbol.toUpperCase()}</div>
+              </div>
+            </div>
+            <div class="chip-symbol">${coin.symbol.toUpperCase()}</div>
+          </div>
+        `;
+
+        const star = nameTd.querySelector(".watch-icon");
+        star.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleWatch(coin);
+        });
+        tr.appendChild(nameTd);
+
+        const priceTd = document.createElement("td");
+        priceTd.textContent = "$" + formatNumber(coin.current_price, 2);
+        tr.appendChild(priceTd);
+
+        const h1Td = document.createElement("td");
+        h1Td.className = "muted";
+        h1Td.textContent = "-";
+        tr.appendChild(h1Td);
+
+        const h24Td = document.createElement("td");
+        const ch24 = coin.price_change_percentage_24h;
+        h24Td.className = changeClass(ch24);
+        h24Td.textContent = changeText(ch24);
+        tr.appendChild(h24Td);
+
+        const d7Td = document.createElement("td");
+        const ch7 = coin.price_change_percentage_7d_in_currency;
+        d7Td.className = changeClass(ch7);
+        d7Td.textContent = changeText(ch7);
+        tr.appendChild(d7Td);
+
+        const mcapTd = document.createElement("td");
+        mcapTd.textContent = "$" + formatNumber(coin.market_cap, 0);
+        tr.appendChild(mcapTd);
+
+        const volTd = document.createElement("td");
+        volTd.textContent = "$" + formatNumber(coin.total_volume, 0);
+        tr.appendChild(volTd);
+
+        const supplyTd = document.createElement("td");
+        supplyTd.textContent = formatNumber(coin.circulating_supply || 0, 0) + " " + coin.symbol.toUpperCase();
+        tr.appendChild(supplyTd);
+
+        coinsTableBody.appendChild(tr);
+      });
+
+      if (coins.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 9;
+        td.style.textAlign = "left";
+        td.className = "muted";
+        td.textContent = currentMode === "watchlist" ? t("emptyWatchlist") : t("emptyResult");
+        tr.appendChild(td);
+        coinsTableBody.appendChild(tr);
+      }
+    }
+
+    function getFilteredCoins() {
+      let coins = [...allCoins];
+
+      const q = searchInput.value.trim().toLowerCase();
+      if (q) {
+        coins = coins.filter(c =>
+          (c.name || "").toLowerCase().includes(q) ||
+          (c.symbol || "").toLowerCase().includes(q)
+        );
+      }
+
+      if (currentMode === "gainers") {
+        coins.sort((a, b) => (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0));
+        coins = coins.slice(0, 20);
+      } else if (currentMode === "losers") {
+        coins.sort((a, b) => (a.price_change_percentage_24h || 0) - (b.price_change_percentage_24h || 0));
+        coins = coins.slice(0, 20);
+      } else if (currentMode === "watchlist") {
+        coins = coins.filter(c => isInWatchlist(c));
+      } else {
+        coins.sort((a, b) => (a.market_cap_rank || 9999) - (b.market_cap_rank || 9999));
+      }
+
+      return coins;
+    }
+
+    function applyFiltersAndRender() {
+      renderTable(getFilteredCoins());
+    }
+
+    function updateDetailTabContent(tabName) {
+      if (tabName === "overview") {
+        detailTabContent.innerHTML = `<p class="muted">${t("detailOverviewText")}</p>`;
+      } else if (tabName === "markets") {
+        detailTabContent.innerHTML = `<p class="muted">${t("detailMarketsText")}</p>`;
+      } else if (tabName === "news") {
+        detailTabContent.innerHTML = `<p class="muted">${t("detailNewsText")}</p>`;
+      }
+    }
+
+    searchInput.addEventListener("input", () => {
+      applyFiltersAndRender();
+    });
+
+    pills.forEach(pill => {
+      if (!pill.dataset.mode) return;
+      pill.addEventListener("click", () => {
+        pills.forEach(p => {
+          if (p.dataset.mode) p.classList.remove("active");
+        });
+        pill.classList.add("active");
+        currentMode = pill.dataset.mode;
+        showHome();
+        applyFiltersAndRender();
+      });
+    });
+
+    homeButton.addEventListener("click", () => {
+      pills.forEach(p => {
+        if (p.dataset.mode) p.classList.remove("active");
+      });
+      const allCoinsPill = document.querySelector('.pill[data-mode="all"]');
+      if (allCoinsPill) allCoinsPill.classList.add("active");
+      currentMode = "all";
+      showHome();
+      applyFiltersAndRender();
+    });
+
+    openAuthModalBtn.addEventListener("click", () => {
+      openAuthModal("login");
+    });
+
+    closeAuthModalBtn.addEventListener("click", () => {
+      closeAuthModal();
+    });
+
+    openSettingsButton.addEventListener("click", () => {
+      openSettings();
+    });
+
+    closeSettingsModal.addEventListener("click", () => {
+      closeSettings();
+    });
+
+    settingsLogoutButton.addEventListener("click", () => {
+      currentUser = null;
+      clearSession();
+      loadWatchlist();
+      updateAuthUI();
+      closeSettings();
+      applyFiltersAndRender();
+    });
+
+    document.getElementById("settingsChangeUsernameBtn").addEventListener("click", () => {
+      const msgEl = document.getElementById("settingsUsernameMessage");
+      const newUsername = document.getElementById("settingsNewUsername").value.trim().toLowerCase();
+      const password = document.getElementById("settingsUsernamePassword").value;
+
+      if (!currentUser) { setAuthMessage(msgEl, "Nicht eingeloggt.", "error"); return; }
+      if (!newUsername) { setAuthMessage(msgEl, "Bitte neuen Benutzernamen eingeben.", "error"); return; }
+      if (!password) { setAuthMessage(msgEl, "Bitte Passwort eingeben.", "error"); return; }
+
+      const users = getUsers();
+      const me = users.find(u => u.username === currentUser.username);
+      if (!me || me.password !== password) { setAuthMessage(msgEl, "Falsches Passwort.", "error"); return; }
+      if (users.some(u => u.username === newUsername && u.username !== currentUser.username)) {
+        setAuthMessage(msgEl, "Benutzername bereits vergeben.", "error"); return;
+      }
+
+      const oldKey = getWatchlistKey();
+      me.username = newUsername;
+      saveUsers(users);
+      currentUser = me;
+      saveSession(me);
+      const wlData = localStorage.getItem(oldKey);
+      if (wlData) {
+        localStorage.setItem(STORAGE_KEYS.watchlistPrefix + newUsername, wlData);
+        localStorage.removeItem(oldKey);
+      }
+      loadWatchlist();
+      updateAuthUI();
+      document.getElementById("settingsNewUsername").value = "";
+      document.getElementById("settingsUsernamePassword").value = "";
+      setAuthMessage(msgEl, "Benutzername erfolgreich geändert.", "success");
+    });
+
+    document.getElementById("settingsChangePasswordBtn").addEventListener("click", () => {
+      const msgEl = document.getElementById("settingsPasswordMessage");
+      const oldPw = document.getElementById("settingsOldPassword").value;
+      const newPw = document.getElementById("settingsNewPassword").value;
+
+      if (!currentUser) { setAuthMessage(msgEl, "Nicht eingeloggt.", "error"); return; }
+      if (!oldPw || !newPw) { setAuthMessage(msgEl, "Bitte alle Felder ausfüllen.", "error"); return; }
+      if (newPw.length < 6) { setAuthMessage(msgEl, "Neues Passwort muss mindestens 6 Zeichen haben.", "error"); return; }
+
+      const users = getUsers();
+      const me = users.find(u => u.username === currentUser.username);
+      if (!me || me.password !== oldPw) { setAuthMessage(msgEl, "Aktuelles Passwort falsch.", "error"); return; }
+
+      me.password = newPw;
+      saveUsers(users);
+      currentUser = me;
+      document.getElementById("settingsOldPassword").value = "";
+      document.getElementById("settingsNewPassword").value = "";
+      setAuthMessage(msgEl, "Passwort erfolgreich geändert.", "success");
+    });
+
+    languageSelect.addEventListener("change", () => {
+      setLanguage(languageSelect.value);
+    });
+
+    showLoginTabBtn.addEventListener("click", () => {
+      switchAuthTab("login");
+    });
+
+    showRegisterTabBtn.addEventListener("click", () => {
+      switchAuthTab("register");
+    });
+
+    authModal.addEventListener("click", (event) => {
+      if (event.target === authModal && currentUser) {
+        closeAuthModal();
+      }
+    });
+
+    settingsModal.addEventListener("click", (event) => {
+      if (event.target === settingsModal) {
+        closeSettings();
+      }
+    });
+
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const username = document.getElementById("loginUsername").value.trim().toLowerCase();
+      const password = document.getElementById("loginPassword").value;
+
+      if (!username || !password) {
+        setAuthMessage(loginMessage, t("loginMissing"), "error");
+        return;
+      }
+
+      const users = getUsers();
+      const matchedUser = users.find(user => user.username === username && user.password === password);
+
+      if (!matchedUser) {
+        setAuthMessage(loginMessage, t("loginFailed"), "error");
+        return;
+      }
+
+      currentUser = matchedUser;
+      saveSession(matchedUser);
+      loadWatchlist();
+      updateAuthUI();
+      applyFiltersAndRender();
+      loginForm.reset();
+      setAuthMessage(loginMessage, t("loginSuccess"), "success");
+    });
+
+    registerForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const firstName = document.getElementById("registerFirstName").value.trim();
+      const lastName = document.getElementById("registerLastName").value.trim();
+      const username = document.getElementById("registerUsername").value.trim().toLowerCase();
+      const password = document.getElementById("registerPassword").value;
+
+      if (!firstName || !lastName || !username || !password) {
+        setAuthMessage(registerMessage, t("registerMissing"), "error");
+        return;
+      }
+
+      if (password.length < 6) {
+        setAuthMessage(registerMessage, t("registerPasswordShort"), "error");
+        return;
+      }
+
+      const users = getUsers();
+      const usernameExists = users.some(user => user.username === username);
+
+      if (usernameExists) {
+        setAuthMessage(registerMessage, t("registerUsernameExists"), "error");
+        return;
+      }
+
+      const newUser = {
+        firstName,
+        lastName,
+        username,
+        password,
+      };
+
+      users.push(newUser);
+      saveUsers(users);
+      currentUser = newUser;
+      saveSession(newUser);
+      loadWatchlist();
+      updateAuthUI();
+      applyFiltersAndRender();
+      registerForm.reset();
+      setAuthMessage(registerMessage, t("registerSuccess"), "success");
+    });
+
+    async function fetchCoinGeckoMarkets() {
+      // OPTIMIZED: Single API call for top 100 coins (faster ~300ms vs 1.5s+ for 4 pages)
+      const url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h,7d";
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("CoinGecko API Error");
+      const coins = await response.json();
+      return coins;
+    }
+
+    async function loadData(initial = false) {
+      try {
+        if (initial) {
+          loadCurrentUser();
+          loadWatchlist();
+          const savedLanguage = localStorage.getItem(STORAGE_KEYS.language) || "de";
+          setLanguage(savedLanguage);
+          updateAuthUI();
+        }
+
+        // Show loading spinner + skeletons
+        tableLoader.style.display = "flex";
+        coinsTableBody.classList.add("loading");
+        loadingText.textContent = "Lade Top 100 Kryptowährungen...";
+
+        const data = await fetchCoinGeckoMarkets();
+        allCoins = data || [];
+        
+        // Hide loading, show data (fade transition)
+        tableLoader.style.display = "none";
+        coinsTableBody.classList.remove("loading");
+
+        renderGlobalFromCoins(allCoins);
+        applyFiltersAndRender();
+
+        footerNoteEl.textContent = t("footerSource");
+
+        if (currentDetailCoin) {
+          const updated = allCoins.find(c => c.id === currentDetailCoin.id);
+          if (updated) {
+            currentDetailCoin = updated;
+            updateDetailUI(currentDetailCoin);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+        tableLoader.style.display = "none";
+        coinsTableBody.classList.remove("loading");
+        if (initial) {
+          marketSummaryEl.textContent = t("marketLoadError");
+          globalMetricsEl.innerHTML = `
+            <div class="metric-card">
+              <span class="metric-label">${t("globalLoadError")}</span>
+            </div>
+          `;
+        }
+      }
+    }
+
+    function showHome() {
+      detailView.style.display = "none";
+      aggregatorView.style.display = "none";
+      homeView.style.display = "block";
+      if (ws) {
+        ws.close();
+        ws = null;
+      }
+    }
+
+    function showDetail() {
+      homeView.style.display = "none";
+      aggregatorView.style.display = "none";
+      detailView.style.display = "block";
+    }
+
+    backToHome.addEventListener("click", () => {
+      currentMode = "all";
+      pills.forEach(p => {
+        if (p.dataset.mode) p.classList.remove("active");
+      });
+      const allCoinsPill = document.querySelector('.pill[data-mode="all"]');
+      if (allCoinsPill) allCoinsPill.classList.add("active");
+      showHome();
+      applyFiltersAndRender();
+    });
+
+    function initChart(symbol) {
+      const container = document.getElementById("chartContainer");
+      container.innerHTML = "";
+      chartErrorEl.textContent = "";
+
+      const tvSymbol = "BINANCE:" + symbol.toUpperCase() + "USDT";
+
+      const script = document.createElement("script");
+      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+      script.async = true;
+      script.innerHTML = JSON.stringify({
+        autosize: true,
+        symbol: tvSymbol,
+        interval: "1",
+        timezone: "Europe/Berlin",
+        theme: "dark",
+        style: "1",
+        locale: "de_DE",
+        backgroundColor: "#020617",
+        gridColor: "#111827",
+        hide_top_toolbar: false,
+        hide_legend: false,
+        save_image: false,
+        allow_symbol_change: false,
+        calendar: false,
+        hide_volume: false,
+        support_host: "https://www.tradingview.com"
+      });
+
+      const widgetDiv = document.createElement("div");
+      widgetDiv.className = "tradingview-widget-container";
+      widgetDiv.style.height = "260px";
+      widgetDiv.style.width = "100%";
+
+      const widgetInner = document.createElement("div");
+      widgetInner.className = "tradingview-widget-container__widget";
+      widgetInner.style.height = "100%";
+      widgetInner.style.width = "100%";
+
+      widgetDiv.appendChild(widgetInner);
+      widgetDiv.appendChild(script);
+      container.appendChild(widgetDiv);
+    }
+
+    function updateDetailUI(coin) {
+      detailNameEl.textContent = coin.name;
+      detailSymbolEl.textContent = coin.symbol.toUpperCase();
+
+      const icon = document.getElementById("detailIcon");
+      if (coin.image) {
+        icon.src = coin.image;
+        icon.style.display = "block";
+      } else {
+        icon.style.display = "none";
+      }
+
+      const prevPrice = parseFloat(detailPriceEl.dataset.prev || coin.current_price);
+      const newPrice = coin.current_price;
+      detailPriceEl.textContent = "$" + formatNumber(newPrice, 2);
+      detailPriceEl.dataset.prev = newPrice;
+      if (newPrice > prevPrice) {
+        detailPriceEl.classList.remove("price-flash-down");
+        void detailPriceEl.offsetWidth;
+        detailPriceEl.classList.add("price-flash-up");
+      } else if (newPrice < prevPrice) {
+        detailPriceEl.classList.remove("price-flash-up");
+        void detailPriceEl.offsetWidth;
+        detailPriceEl.classList.add("price-flash-down");
+      }
+
+      const change24 = coin.price_change_percentage_24h;
+      const changeBadge = document.getElementById("detailChange");
+      changeBadge.textContent = changeText(change24) + " (24h)";
+      changeBadge.className = "detail-change-badge " + (change24 >= 0 ? "pos" : "neg");
+
+      const low24 = coin.low_24h;
+      const high24 = coin.high_24h;
+      document.getElementById("detailLow24").textContent = low24 ? "$" + formatNumber(low24, 2) : "-";
+      document.getElementById("detailHigh24").textContent = high24 ? "$" + formatNumber(high24, 2) : "-";
+      if (low24 && high24 && high24 > low24) {
+        const pct = ((newPrice - low24) / (high24 - low24)) * 100;
+        document.getElementById("detailRangeFill").style.width = Math.min(100, Math.max(0, pct)) + "%";
+      }
+
+      document.getElementById("detailRankBadge").textContent = "#" + (coin.market_cap_rank || "-");
+      detailMcapEl.textContent = "$" + formatBigNumber(coin.market_cap);
+      detailVolumeEl.textContent = "$" + formatBigNumber(coin.total_volume);
+      detailSupplyEl.textContent = formatBigNumber(coin.circulating_supply || 0) + " " + coin.symbol.toUpperCase();
+      detailRankEl.textContent = coin.market_cap_rank || "-";
+
+      const ch24stat = document.getElementById("detailChange24Stat");
+      ch24stat.textContent = changeText(change24);
+      ch24stat.className = "stat-value " + changeClass(change24);
+
+      const ch7 = coin.price_change_percentage_7d_in_currency;
+      const ch7stat = document.getElementById("detailChange7d");
+      ch7stat.textContent = changeText(ch7);
+      ch7stat.className = "stat-value " + changeClass(ch7);
+    }
+
+    async function loadBinanceCandles(symbol) {
+      return [];
+    }
+
+    async function loadBinanceMarkets(symbol) {
+      marketsTableBody.innerHTML = "";
+      const spotSymbol = symbol + "USDT";
+      const futSymbol = symbol + "USDT";
+
+      try {
+        const spotRes = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${spotSymbol}`);
+        const spot = spotRes.ok ? await spotRes.json() : null;
+
+        const futRes = await fetch(`https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=${futSymbol}`);
+        const fut = futRes.ok ? await futRes.json() : null;
+
+        if (spot) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>Binance</td>
+            <td>Spot</td>
+            <td>${spotSymbol}</td>
+            <td>$${formatNumber(spot.lastPrice, 2)}</td>
+            <td>$${formatNumber(spot.quoteVolume, 0)}</td>
+          `;
+          marketsTableBody.appendChild(tr);
+        }
+
+        if (fut) {
+          const tr2 = document.createElement("tr");
+          tr2.innerHTML = `
+            <td>Binance</td>
+            <td>USDT‑M Futures</td>
+            <td>${futSymbol}</td>
+            <td>$${formatNumber(fut.lastPrice, 2)}</td>
+            <td>$${formatNumber(fut.quoteVolume, 0)}</td>
+          `;
+          marketsTableBody.appendChild(tr2);
+        }
+
+        if (!spot && !fut) {
+          marketsTableBody.innerHTML = `
+            <tr><td colspan="5" style="text-align:left;">${t("noMarketsFound")}</td></tr>
+          `;
+        }
+      } catch (e) {
+        console.error(e);
+        marketsTableBody.innerHTML = `
+          <tr><td colspan="5" style="text-align:left;">${t("marketsLoadError")}</td></tr>
+        `;
+      }
+    }
+
+    function startBinanceWS(symbol) {
+      if (ws) {
+        ws.close();
+        ws = null;
+      }
+      const stream = symbol.toLowerCase() + "usdt@miniTicker";
+      const url = `wss://stream.binance.com:9443/ws/${stream}`;
+      ws = new WebSocket(url);
+      ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        if (!msg.c) return;
+        if (currentDetailCoin && currentDetailCoin.symbol.toUpperCase() === symbol.toUpperCase()) {
+          const oldPrice = currentDetailCoin.current_price;
+          const newPrice = parseFloat(msg.c);
+          currentDetailCoin.current_price = newPrice;
+          detailPriceEl.dataset.prev = oldPrice;
+          detailPriceEl.textContent = "$" + formatNumber(newPrice, 2);
+          detailPriceEl.classList.remove("price-flash-up", "price-flash-down");
+          void detailPriceEl.offsetWidth;
+          detailPriceEl.classList.add(newPrice >= oldPrice ? "price-flash-up" : "price-flash-down");
+        }
+      };
+      ws.onerror = () => {};
+    }
+
+    async function openDetail(coinId) {
+      const coin = allCoins.find(c => c.id === coinId);
+      if (!coin) return;
+      currentDetailCoin = coin;
+      updateDetailUI(coin);
+      showDetail();
+
+      const symbol = coin.symbol.toUpperCase();
+      initChart(symbol);
+      await loadBinanceMarkets(symbol);
+      startBinanceWS(symbol);
+    }
+
+    detailTabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        detailTabs.forEach(tEl => tEl.classList.remove("active"));
+        tab.classList.add("active");
+        updateDetailTabContent(tab.dataset.tab);
+      });
+    });
+
+    const aggregatorView = document.getElementById("aggregatorView");
+    const aggregatorButton = document.getElementById("aggregatorButton");
+    const aggCoinInput = document.getElementById("aggCoinInput");
+    const aggCoinDropdown = document.getElementById("aggCoinDropdown");
+    const aggAmount = document.getElementById("aggAmount");
+    const aggSearchBtn = document.getElementById("aggSearchBtn");
+    const aggResult = document.getElementById("aggResult");
+
+    let aggSelectedCoin = null;
+
+    const PLATFORMS = [
+      {
+        id: "binance",
+        name: "Binance",
+        logo: "https://cryptologos.cc/logos/binance-coin-bnb-logo.png",
+        fee: 0.001,
+        feeLabel: "0.10%",
+        url: (sym) => `https://www.binance.com/en/trade/${sym}_USDT`,
+        fetchPrice: async (sym) => {
+          const r = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}USDT`);
+          if (!r.ok) return null;
+          const d = await r.json();
+          return parseFloat(d.price);
+        }
+      },
+      {
+        id: "kraken",
+        name: "Kraken",
+        logo: "https://cryptologos.cc/logos/kraken-krak-logo.png",
+        fee: 0.0026,
+        feeLabel: "0.26%",
+        url: (sym) => `https://www.kraken.com/prices/${sym.toLowerCase()}`,
+        fetchPrice: async (sym) => {
+          const pair = sym + "USD";
+          const r = await fetch(`https://api.kraken.com/0/public/Ticker?pair=${pair}`);
+          if (!r.ok) return null;
+          const d = await r.json();
+          if (d.error && d.error.length) return null;
+          const key = Object.keys(d.result)[0];
+          return parseFloat(d.result[key].c[0]);
+        }
+      },
+      {
+        id: "coinbase",
+        name: "Coinbase",
+        logo: "https://cryptologos.cc/logos/coinbase-coin-coin-logo.png",
+        fee: 0.006,
+        feeLabel: "0.60%",
+        url: (sym) => `https://www.coinbase.com/price/${sym.toLowerCase()}`,
+        fetchPrice: async (sym) => {
+          const r = await fetch(`https://api.coinbase.com/v2/prices/${sym}-USD/spot`);
+          if (!r.ok) return null;
+          const d = await r.json();
+          return parseFloat(d.data?.amount);
+        }
+      },
+      {
+        id: "bybit",
+        name: "Bybit",
+        logo: "https://cryptologos.cc/logos/bybit-bit-logo.png",
+        fee: 0.001,
+        feeLabel: "0.10%",
+        url: (sym) => `https://www.bybit.com/en/trade/spot/${sym}/USDT`,
+        fetchPrice: async (sym) => {
+          const r = await fetch(`https://api.bybit.com/v5/market/tickers?category=spot&symbol=${sym}USDT`);
+          if (!r.ok) return null;
+          const d = await r.json();
+          return parseFloat(d.result?.list?.[0]?.lastPrice);
+        }
+      },
+      {
+        id: "kucoin",
+        name: "KuCoin",
+        logo: "https://cryptologos.cc/logos/kucoin-kcs-logo.png",
+        fee: 0.001,
+        feeLabel: "0.10%",
+        url: (sym) => `https://www.kucoin.com/trade/${sym}-USDT`,
+        fetchPrice: async (sym) => {
+          const r = await fetch(`https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=${sym}-USDT`);
+          if (!r.ok) return null;
+          const d = await r.json();
+          return parseFloat(d.data?.price);
+        }
+      }
+    ];
+
+    function showAggregator() {
+      homeView.style.display = "none";
+      detailView.style.display = "none";
+      aggregatorView.style.display = "block";
+      if (ws) { ws.close(); ws = null; }
+      pills.forEach(p => { if (p.dataset.mode) p.classList.remove("active"); });
+    }
+
+    aggregatorButton.addEventListener("click", () => {
+      showAggregator();
+    });
+
+    aggCoinInput.addEventListener("input", () => {
+      const q = aggCoinInput.value.trim().toLowerCase();
+      aggSelectedCoin = null;
+      if (!q || q.length < 1) {
+        aggCoinDropdown.innerHTML = "";
+        aggCoinDropdown.classList.remove("open");
+        return;
+      }
+      const matches = allCoins.filter(c =>
+        c.symbol.toLowerCase().includes(q) || c.name.toLowerCase().includes(q)
+      ).slice(0, 10);
+
+      if (!matches.length) {
+        aggCoinDropdown.classList.remove("open");
+        return;
+      }
+      aggCoinDropdown.innerHTML = matches.map(c => `
+        <div class="agg-dropdown-item" data-id="${c.id}" data-symbol="${c.symbol.toUpperCase()}" data-name="${c.name}" data-img="${c.image || ''}">
+          <img src="${c.image || ''}" onerror="this.style.display='none'" />
+          <span>${c.name}</span>
+          <span style="color:var(--text-muted);margin-left:auto;">${c.symbol.toUpperCase()}</span>
+        </div>
+      `).join("");
+      aggCoinDropdown.classList.add("open");
+
+      aggCoinDropdown.querySelectorAll(".agg-dropdown-item").forEach(item => {
+        item.addEventListener("click", () => {
+          aggSelectedCoin = { id: item.dataset.id, symbol: item.dataset.symbol, name: item.dataset.name, image: item.dataset.img };
+          aggCoinInput.value = item.dataset.name + " (" + item.dataset.symbol + ")";
+          aggCoinDropdown.classList.remove("open");
+        });
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!aggCoinInput.contains(e.target) && !aggCoinDropdown.contains(e.target)) {
+        aggCoinDropdown.classList.remove("open");
+      }
+    });
+
+    aggSearchBtn.addEventListener("click", async () => {
+      if (!aggSelectedCoin) {
+        aggResult.innerHTML = `<div class="agg-error">Bitte zuerst eine Kryptowährung auswählen.</div>`;
+        return;
+      }
+      const usdAmount = parseFloat(aggAmount.value);
+      if (!usdAmount || usdAmount <= 0) {
+        aggResult.innerHTML = `<div class="agg-error">Bitte einen gültigen Betrag eingeben.</div>`;
+        return;
+      }
+
+      aggResult.innerHTML = `<div class="agg-loading">Lade Echtzeit-Preise von allen Plattformen...</div>`;
+      aggSearchBtn.disabled = true;
+
+      const sym = aggSelectedCoin.symbol.toUpperCase();
+      const results = await Promise.allSettled(PLATFORMS.map(async p => {
+        const price = await p.fetchPrice(sym);
+        return { platform: p, price };
+      }));
+
+      const data = results
+        .filter(r => r.status === "fulfilled" && r.value.price && !isNaN(r.value.price))
+        .map(r => r.value)
+        .sort((a, b) => a.price - b.price);
+
+      aggSearchBtn.disabled = false;
+
+      if (!data.length) {
+        aggResult.innerHTML = `<div class="agg-error">Keine Preisdaten verfügbar für ${sym}. Möglicherweise wird dieses Coin nicht auf allen Plattformen gehandelt.</div>`;
+        return;
+      }
+
+      const bestPrice = data[0].price;
+      const savings = data.length > 1 ? ((data[data.length - 1].price - bestPrice) / data[data.length - 1].price * 100).toFixed(2) : null;
+
+      let html = `
+        <div class="agg-summary">
+          <div>Coin: <b>${aggSelectedCoin.name} (${sym})</b></div>
+          <div>Betrag: <b>$${formatNumber(usdAmount, 2)}</b></div>
+          <div>Bester Preis: <b>$${formatNumber(bestPrice, 2)}</b> auf <b>${data[0].platform.name}</b></div>
+          ${savings ? `<div style="color:var(--positive);">Du sparst bis zu <b>${savings}%</b> gegenüber der teuersten Option</div>` : ""}
+        </div>
+        <div class="agg-platforms">
+      `;
+
+      data.forEach((item, i) => {
+        const p = item.platform;
+        const coinAmount = usdAmount / item.price;
+        const fee = usdAmount * p.fee;
+        const totalCost = usdAmount + fee;
+        const coinAfterFee = (usdAmount - fee) / item.price;
+        const isBest = i === 0;
+        const priceDiff = i > 0 ? ((item.price - bestPrice) / bestPrice * 100).toFixed(2) : null;
+
+        html += `
+          <div class="agg-platform-card ${isBest ? "best" : ""}">
+            ${isBest ? `<div class="agg-best-badge">BESTER PREIS</div>` : ""}
+            <div class="agg-platform-name">
+              <img class="agg-platform-logo" src="${p.logo}" onerror="this.style.display='none'" />
+              ${p.name}
+              ${priceDiff ? `<span style="margin-left:auto;font-size:11px;color:var(--negative);font-weight:400;">+${priceDiff}%</span>` : ""}
+            </div>
+            <div class="agg-price-big">$${formatNumber(item.price, 2)}</div>
+            <div class="agg-row"><span>Du erhältst</span><span>${formatNumber(coinAfterFee, 6)} ${sym}</span></div>
+            <div class="agg-row"><span>Handelsgebühr</span><span>${p.feeLabel} ($${formatNumber(fee, 2)})</span></div>
+            <div class="agg-row"><span>Gesamtkosten</span><span>$${formatNumber(totalCost, 2)}</span></div>
+            <a class="agg-buy-btn" href="${p.url(sym)}" target="_blank" rel="noopener">Auf ${p.name} kaufen →</a>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      aggResult.innerHTML = html;
+    });
+
+    loadData(true);
+    setInterval(() => {
+      loadData(false);
+    }, 10000); // OPTIMIZED: 10s interval (less API spam, still responsive)
+
+    const GEMINI_KEY = "AIzaSyA-9AdDJlI22ycxCH_d_YuziqkcDmLuVng";
+    const aiFab = document.getElementById("aiFab");
+    const aiPanel = document.getElementById("aiPanel");
+    const aiPanelClose = document.getElementById("aiPanelClose");
+    const aiMessages = document.getElementById("aiMessages");
+    const aiInput = document.getElementById("aiInput");
+    const aiSend = document.getElementById("aiSend");
+    let aiHistory = [];
+
+    aiFab.addEventListener("click", () => {
+      aiPanel.classList.toggle("open");
+      if (aiPanel.classList.contains("open")) {
+        aiInput.focus();
+      }
+    });
+
+    aiPanelClose.addEventListener("click", () => {
+      aiPanel.classList.remove("open");
+    });
+
+    function appendMessage(role, text) {
+      const div = document.createElement("div");
+      div.className = "ai-msg " + role;
+      div.textContent = text;
+      aiMessages.appendChild(div);
+      aiMessages.scrollTop = aiMessages.scrollHeight;
+      return div;
+    }
+
+    async function sendAIMessage() {
+      const userText = aiInput.value.trim();
+      if (!userText) return;
+
+      aiInput.value = "";
+      aiSend.disabled = true;
+      appendMessage("user", userText);
+
+      const thinkingDiv = appendMessage("thinking", "...");
+
+      const topCoins = allCoins.slice(0, 10).map(c =>
+        `${c.name} (${c.symbol.toUpperCase()}): $${c.current_price?.toFixed(2)} | 24h: ${c.price_change_percentage_24h?.toFixed(2)}%`
+      ).join("\n");
+
+      const systemPrompt = `Du bist ein hochintelligenter Krypto-Assistent auf einem Live-Crypto-Dashboard namens CryptoBoard.
+Du gibst präzise, fundierte und aktuelle Antworten über Kryptowährungen, Blockchain, DeFi, NFTs, Trading-Strategien und Marktanalysen.
+Antworte immer in der Sprache, in der der Nutzer fragt.
+Hier sind die aktuellen Live-Preise der Top-Coins (Stand: gerade eben):
+${topCoins}
+Beziehe diese Daten in deine Antworten ein, wenn relevant.`;
+
+      const contents = [
+        { role: "user", parts: [{ text: systemPrompt }] },
+        { role: "model", parts: [{ text: "Verstanden. Ich bin bereit, Krypto-Fragen zu beantworten." }] },
+        ...aiHistory.map(m => ({
+          role: m.role === "assistant" ? "model" : "user",
+          parts: [{ text: m.content }]
+        })),
+        { role: "user", parts: [{ text: userText }] }
+      ];
+
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents })
+          }
+        );
+
+        const data = await res.json();
+
+        if (data.error) {
+          thinkingDiv.className = "ai-msg assistant";
+          thinkingDiv.textContent = "Fehler: " + data.error.message;
+        } else {
+          const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Keine Antwort erhalten.";
+          thinkingDiv.className = "ai-msg assistant";
+          thinkingDiv.textContent = reply;
+          aiHistory.push({ role: "user", content: userText });
+          aiHistory.push({ role: "assistant", content: reply });
+          if (aiHistory.length > 20) aiHistory = aiHistory.slice(-20);
+        }
+      } catch (e) {
+        thinkingDiv.className = "ai-msg assistant";
+        thinkingDiv.textContent = "Fehler: " + e.message;
+      }
+
+      aiSend.disabled = false;
+      aiMessages.scrollTop = aiMessages.scrollHeight;
+      aiInput.focus();
+    }
+
+    aiSend.addEventListener("click", sendAIMessage);
+    aiInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendAIMessage();
+    });
+  </script>
+</body>
+</html>
