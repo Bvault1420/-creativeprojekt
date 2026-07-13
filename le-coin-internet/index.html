@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Le coin Internet – Boléro</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #f4efe4;
@@ -23,7 +20,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: "Source Sans 3", "Segoe UI", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
@@ -41,7 +38,7 @@
       display: inline-block;
       background: var(--red);
       color: #fff;
-      font-family: "Nunito", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-weight: 800;
       font-size: 0.85rem;
       padding: 5px 14px;
@@ -50,7 +47,7 @@
     }
 
     h1 {
-      font-family: "Nunito", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: clamp(1.8rem, 4vw, 2.4rem);
       font-weight: 800;
       color: var(--orange);
@@ -58,7 +55,7 @@
     }
 
     .subtitle {
-      font-family: "Nunito", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-weight: 700;
       color: var(--red);
       font-size: 1.05rem;
@@ -96,16 +93,25 @@
       align-items: start;
     }
 
-    .profile__photo {
+    .profile__avatar {
       width: 100px;
       height: 100px;
-      object-fit: cover;
       border-radius: 50%;
       border: 3px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
     }
 
+    .profile__avatar--camille { background: #e67e73; }
+    .profile__avatar--arthur { background: #5b9bd5; }
+
     .profile__name {
-      font-family: "Nunito", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-weight: 700;
       color: var(--red);
       font-size: 1rem;
@@ -153,7 +159,7 @@
     }
 
     .box h2 {
-      font-family: "Nunito", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-weight: 700;
       font-size: 0.9rem;
       color: var(--red);
@@ -208,7 +214,7 @@
         text-align: center;
       }
 
-      .profile__photo {
+      .profile__avatar {
         margin: 0 auto;
       }
 
@@ -235,12 +241,7 @@
         <div class="profiles">
 
           <article class="profile">
-            <img
-              class="profile__photo"
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=200&h=200&fit=crop"
-              alt="Camille"
-              loading="lazy"
-            />
+            <div class="profile__avatar profile__avatar--camille" aria-hidden="true">C</div>
             <div>
               <p class="profile__name">Camille, 13 ans – 4e</p>
               <div class="profile__text">
@@ -252,12 +253,7 @@
           </article>
 
           <article class="profile">
-            <img
-              class="profile__photo"
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop"
-              alt="Arthur"
-              loading="lazy"
-            />
+            <div class="profile__avatar profile__avatar--arthur" aria-hidden="true">A</div>
             <div>
               <p class="profile__name">Arthur, 12 ans – 5e</p>
               <div class="profile__text">
