@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Le coin Internet – Boléro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-cream: #f5f0e1;
+      --paper-white: #ffffff;
+      --accent-red: #c0392b;
+      --accent-orange: #d34828;
+      --bolero-red: #a93226;
+      --box-light: #f9e4b7;
+      --box-dark: #f5c469;
+      --box-label: #e8c98a;
+      --nav-blue: #2e86c1;
+      --text-dark: #2c2c2c;
+      --shadow-paper: 0 4px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Source Sans 3", "Segoe UI", sans-serif;
+      background: var(--bg-cream);
+      color: var(--text-dark);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 20px 40px;
+    }
+
+    /* Top navigation bar */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 8px;
+      margin-bottom: 28px;
+      font-size: 0.82rem;
+      color: #666;
+      letter-spacing: 0.02em;
+    }
+
+    .top-nav__items {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+
+    .top-nav__items span {
+      cursor: default;
+    }
+
+    .page-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--nav-blue);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Article header */
+    .article-header {
+      position: relative;
+      margin-bottom: 22px;
+      padding-left: 4px;
+    }
+
+    .bolero-tab {
+      display: inline-block;
+      background: var(--bolero-red);
+      color: #fff;
+      font-family: "Nunito", sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 6px 18px 6px 14px;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+      clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+    }
+
+    .main-title {
+      font-family: "Nunito", sans-serif;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 800;
+      color: var(--accent-orange);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-family: "Nunito", sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent-red);
+      margin-bottom: 10px;
+    }
+
+    .intro-text {
+      font-size: 1rem;
+      max-width: 720px;
+    }
+
+    .intro-text .signature {
+      font-style: italic;
+      color: #555;
+    }
+
+    /* White paper container */
+    .paper {
+      background: var(--paper-white);
+      box-shadow: var(--shadow-paper);
+      padding: 28px 24px 36px;
+      position: relative;
+      margin-bottom: 0;
+    }
+
+    .paper::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -18px;
+      height: 20px;
+      background: var(--paper-white);
+      clip-path: polygon(
+        0% 0%, 3% 80%, 6% 20%, 9% 70%, 12% 10%, 15% 85%, 18% 25%,
+        21% 75%, 24% 15%, 27% 90%, 30% 30%, 33% 65%, 36% 5%, 39% 80%,
+        42% 35%, 45% 70%, 48% 10%, 51% 85%, 54% 25%, 57% 75%, 60% 15%,
+        63% 90%, 66% 30%, 69% 65%, 72% 5%, 75% 80%, 78% 35%, 81% 70%,
+        84% 10%, 87% 85%, 90% 25%, 93% 75%, 96% 15%, 100% 0%
+      );
+      filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.06));
+    }
+
+    /* Fishing illustration */
+    .fishing-illustration {
+      float: left;
+      width: 110px;
+      margin: 0 16px 8px 0;
+      shape-outside: margin-box;
+    }
+
+    /* Profiles grid */
+    .profiles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px 20px;
+      margin-top: 12px;
+      clear: both;
+    }
+
+    .profile {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .profile--arthur {
+      flex-direction: row-reverse;
+    }
+
+    .profile__visual {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .profile__photo {
+      width: 130px;
+      height: 110px;
+      object-fit: cover;
+      object-position: center top;
+      border-radius: 4px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile__icon {
+      position: absolute;
+      top: -8px;
+      right: 10px;
+      color: var(--accent-red);
+      opacity: 0.85;
+    }
+
+    .speech-bubble {
+      background: #fff;
+      border: 2px solid #e8e8e8;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 0.92rem;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      flex: 1;
+    }
+
+    .speech-bubble::before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+    }
+
+    .profile--camille .speech-bubble::before {
+      top: 20px;
+      left: -12px;
+      border-width: 8px 14px 8px 0;
+      border-color: transparent #e8e8e8 transparent transparent;
+    }
+
+    .profile--camille .speech-bubble::after {
+      content: "";
+      position: absolute;
+      top: 22px;
+      left: -8px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 6px 10px 6px 0;
+      border-color: transparent #fff transparent transparent;
+    }
+
+    .profile--arthur .speech-bubble::before {
+      top: 20px;
+      right: -12px;
+      border-width: 8px 0 8px 14px;
+      border-color: transparent transparent transparent #e8e8e8;
+    }
+
+    .profile--arthur .speech-bubble::after {
+      content: "";
+      position: absolute;
+      top: 22px;
+      right: -8px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 6px 0 6px 10px;
+      border-color: transparent transparent transparent #fff;
+    }
+
+    .speech-bubble strong {
+      font-weight: 700;
+      color: var(--accent-red);
+    }
+
+    /* Summary */
+    .summary {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px dashed #ddd;
+      font-size: 0.95rem;
+      max-width: 90%;
+    }
+
+    .summary .signature {
+      font-style: italic;
+      color: #555;
+    }
+
+    /* Footer section */
+    .footer-section {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 16px 20px;
+      align-items: start;
+      margin-top: 36px;
+      padding: 0 4px;
+    }
+
+    .mouse-illustration {
+      width: 70px;
+      margin-top: 20px;
+    }
+
+    /* Vocabulary box */
+    .vocab-box {
+      background: var(--box-light);
+      padding: 16px 18px 18px;
+      border-radius: 4px;
+    }
+
+    .vocab-box__title {
+      font-family: "Nunito", sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      color: #5a4a2a;
+    }
+
+    .vocab-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+      list-style: none;
+    }
+
+    .vocab-list li {
+      background: var(--box-label);
+      padding: 5px 10px;
+      border-radius: 3px;
+      font-size: 0.88rem;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    /* ON DIT box */
+    .ondit-box {
+      background: var(--box-dark);
+      border-radius: 12px;
+      padding: 16px 18px;
+      min-width: 200px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .ondit-box__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .ondit-box__title {
+      font-family: "Nunito", sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #5a3e10;
+      letter-spacing: 0.06em;
+    }
+
+    .ondit-list {
+      list-style: none;
+      font-size: 0.9rem;
+    }
+
+    .ondit-list li {
+      padding: 3px 0;
+      border-bottom: 1px dotted rgba(90, 62, 16, 0.2);
+    }
+
+    .ondit-list li:last-child {
+      border-bottom: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .profiles {
+        grid-template-columns: 1fr;
+      }
+
+      .profile,
+      .profile--arthur {
+        flex-direction: column;
+      }
+
+      .profile--arthur .speech-bubble::before {
+        right: auto;
+        left: -12px;
+        border-width: 8px 14px 8px 0;
+        border-color: transparent #e8e8e8 transparent transparent;
+      }
+
+      .profile--arthur .speech-bubble::after {
+        right: auto;
+        left: -8px;
+        border-width: 6px 10px 6px 0;
+        border-color: transparent #fff transparent transparent;
+      }
+
+      .footer-section {
+        grid-template-columns: 1fr;
+      }
+
+      .mouse-illustration {
+        display: none;
+      }
+
+      .fishing-illustration {
+        float: none;
+        display: block;
+        margin: 0 auto 16px;
+      }
+
+      .vocab-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .top-nav__items {
+        gap: 12px;
+        font-size: 0.75rem;
+      }
+
+      .profile__photo {
+        width: 100px;
+        height: 90px;
+      }
+
+      .speech-bubble {
+        font-size: 0.88rem;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+  <nav class="top-nav" aria-label="Navigation du manuel">
+    <div class="top-nav__items">
+      <span>Pratique</span>
+      <span>Station</span>
+      <span>1-2-3-4</span>
+      <span>Bilan</span>
+      <span>Grammaire</span>
+    </div>
+    <div class="page-number" aria-label="Page 6">6</div>
+  </nav>
+
+  <header class="article-header">
+    <div class="bolero-tab">Boléro</div>
+    <h1 class="main-title">Le coin Internet</h1>
+    <p class="subtitle">Internet : Un peu, beaucoup, toujours… ?</p>
+    <p class="intro-text">
+      Aujourd'hui, notre sujet, c'est les jeunes et Internet : nous avons demandé aux jeunes de notre collège comment ils utilisent « le Net ». Voici les avis de Camille et d'Arthur. <span class="signature">Enzo</span>
+    </p>
+  </header>
+
+  <main>
+    <section class="paper" aria-label="Interviews de Camille et Arthur">
+      <!-- Fishing cartoon SVG -->
+      <div class="fishing-illustration" aria-hidden="true">
+        <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+          <!-- Monitor -->
+          <rect x="30" y="35" width="50" height="35" rx="3" fill="#4a90d9" stroke="#333" stroke-width="1.5"/>
+          <rect x="34" y="39" width="42" height="27" fill="#87ceeb"/>
+          <!-- Fish on screen -->
+          <ellipse cx="55" cy="52" rx="10" ry="5" fill="#2ecc71"/>
+          <polygon points="65,52 72,50 72,54" fill="#27ae60"/>
+          <circle cx="50" cy="51" r="1.5" fill="#333"/>
+          <!-- Stand -->
+          <rect x="48" y="70" width="14" height="4" fill="#666"/>
+          <rect x="42" y="74" width="26" height="3" rx="1" fill="#888"/>
+          <!-- Boy -->
+          <circle cx="18" cy="28" r="8" fill="#f5cba7" stroke="#333" stroke-width="1"/>
+          <rect x="12" y="36" width="12" height="18" rx="2" fill="#3498db" stroke="#333" stroke-width="1"/>
+          <!-- Fishing rod -->
+          <line x1="22" y1="38" x2="55" y2="20" stroke="#8B4513" stroke-width="+2"/>
+          <path d="M55,20 Q60,35 55,48" fill="none" stroke="#aaa" stroke-width="1"/>
+          <!-- Hook -->
+          <path d="M54,48 Q58,55 52,58" fill="none" stroke="#666" stroke-width="1.5"/>
+        </svg>
+      </div>
+
+      <div class="profiles">
+        <!-- Camille -->
+        <article class="profile profile--camille">
+          <div class="profile__visual">
+            <img
+              class="profile__photo"
+              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=260&h=220&fit=crop"
+              alt="Camille, 13 ans, avec un ordinateur portable"
+              loading="lazy"
+            />
+            <div class="profile__icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <text x="2" y="22" font-family="Nunito, sans-serif" font-size="22" font-weight="800" fill="#c0392b">@</text>
+              </svg>
+            </div>
+          </div>
+          <div class="speech-bubble">
+            <p><strong>Bonjour !</strong> Je m'appelle Camille, j'ai 13 ans et je suis en 4e. J'adore surfer sur Internet et chatter avec mes amis. J'ai mon blog à moi où je raconte ma vie. J'aime aussi lire les pages de mes copains, regarder des photos et des vidéos et écouter de la musique. Avec Internet, je peux rester en contact avec mes copains ! Mais mes parents trouvent que je passe trop de temps sur mon portable. Et je n'ai pas le droit d'être sur Internet après 21 heures…</p>
+          </div>
+        </article>
+
+        <!-- Arthur -->
+        <article class="profile profile--arthur">
+          <div class="profile__visual">
+            <img
+              class="profile__photo"
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=260&h=220&fit=crop"
+              alt="Arthur, 12 ans, avec un ordinateur portable"
+              loading="lazy"
+            />
+            <div class="profile__icon" aria-hidden="true">
+              <svg width="32" height="28" viewBox="0 0 32 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 20 Q8 8 16 8 Q24 8 28 20" stroke="#c0392b" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <circle cx="16" cy="22" r="2" fill="#c0392b"/>
+                <circle cx="10" cy="18" r="1.5" fill="#c0392b"/>
+                <circle cx="16" cy="15" r="1.5" fill="#c0392b"/>
+                <circle cx="22" cy="18" r="1.5" fill="#c0392b"/>
+              </svg>
+            </div>
+          </div>
+          <div class="speech-bubble">
+            <p><strong>Salut,</strong> moi, c'est Arthur. J'ai 12 ans. Sur Internet, j'écris des courriels à des amis et parfois, je cherche des informations. J'ai souvent des invitations pour le chat, mais je ne participe pas parce que ça ne me dit rien. Pour moi, il est important de sortir et de discuter avec mes copains en réalité. J'ai des copains qui passent la nuit à chatter sur Internet. C'est pourquoi ils sont toujours fatigués le matin ! Mais moi, je préfère dormir. Bon, je pars, j'ai sport, maintenant ! Salut !</p>
+          </div>
+        </article>
+      </div>
+
+      <p class="summary">
+        On peut voir que pour Camille et Arthur, il est surtout important d'entrer en contact avec les amis, par courriel ou par le chat. Mais on voit aussi qu'Internet, ça prend du temps – qu'on n'a plus pour faire autre chose. <span class="signature">Enzo</span>
+      </p>
+    </section>
+
+    <section class="footer-section" aria-label="Vocabulaire et expressions utiles">
+      <!-- Mouse with microphone SVG -->
+      <div class="mouse-illustration" aria-hidden="true">
+        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg">
+          <!-- Body -->
+          <ellipse cx="30" cy="55" rx="18" ry="22" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+          <!-- Head -->
+          <circle cx="30" cy="28" r="16" fill="#f0f0f0" stroke="#999" stroke-width="1"/>
+          <!-- Ears -->
+          <circle cx="18" cy="16" r="8" fill="#f0f0f0" stroke="#999" stroke-width="1"/>
+          <circle cx="42" cy="16" r="8" fill="#f0f0f0" stroke="#999" stroke-width="1"/>
+          <circle cx="18" cy="16" r="4" fill="#ffb6c1"/>
+          <circle cx="42" cy="16" r="4" fill="#ffb6c1"/>
+          <!-- Eyes -->
+          <circle cx="24" cy="28" r="3" fill="#333"/>
+          <circle cx="36" cy="28" r="3" fill="#333"/>
+          <circle cx="25" cy="27" r="1" fill="#fff"/>
+          <circle cx="37" cy="27" r="1" fill="#fff"/>
+          <!-- Nose -->
+          <ellipse cx="30" cy="34" rx="3" ry="2" fill="#ffb6c1"/>
+          <!-- Whiskers -->
+          <line x1="10" y1="32" x2="22" y2="33" stroke="#999" stroke-width="0.8"/>
+          <line x1="10" y1="36" x2="22" y2="35" stroke="#999" stroke-width="0.8"/>
+          <line x1="38" y1="33" x2="50" y2="32" stroke="#999" stroke-width="0.8"/>
+          <line x1="38" y1="35" x2="50" y2="36" stroke="#999" stroke-width="0.8"/>
+          <!-- Microphone -->
+          <rect x="44" y="10" width="8" height="14" rx="4" fill="#555"/>
+          <line x1="48" y1="24" x2="48" y2="32" stroke="#555" stroke-width="2"/>
+          <line x1="42" y1="32" x2="54" y2="32" stroke="#555" stroke-width="2"/>
+        </svg>
+      </div>
+
+      <div class="vocab-box">
+        <p class="vocab-box__title">Pour vos interviews, vous pouvez utiliser les mots suivants :</p>
+        <ul class="vocab-list">
+          <li>dormir</li>
+          <li>sites Internet</li>
+          <li>avoir le droit de faire qc</li>
+          <li>sortir</li>
+          <li>copains</li>
+          <li>préféré(e)</li>
+          <li>utiliser qc</li>
+          <li>parents</li>
+          <li>surfer</li>
+          <li>important</li>
+        </ul>
+      </div>
+
+      <aside class="ondit-box">
+        <div class="ondit-box__header">
+          <svg width="24" height="20" viewBox="0 0 24 20" aria-hidden="true">
+            <ellipse cx="9" cy="12" rx="8" ry="7" fill="#fff" stroke="#5a3e10" stroke-width="1"/>
+            <ellipse cx="16" cy="8" rx="7" ry="6" fill="#fff" stroke="#5a3e10" stroke-width="1"/>
+          </svg>
+          <h2 class="ondit-box__title">ON DIT</h2>
+        </div>
+        <ul class="ondit-list">
+          <li>Comment est-ce que… ?</li>
+          <li>À quelle heure est-ce que… ?</li>
+          <li>Combien de temps est-ce que… ?</li>
+          <li>Quand est-ce que… ?</li>
+          <li>Quels/Quelles sont tes… ?</li>
+          <li>Que disent… ?</li>
+        </ul>
+      </aside>
+    </section>
+  </main>
+  </div>
+</body>
+</html>
