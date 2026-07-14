@@ -17,7 +17,6 @@
       --rust: #a04000;
       --blue-bubble: #dceefb;
       --grey-bubble: #ececec;
-      --nav-blue: #2980b9;
       --text: #2c2c2c;
       --muted: #5a5a5a;
     }
@@ -36,35 +35,6 @@
       max-width: 960px;
       margin: 0 auto;
       padding: 16px 18px 50px;
-    }
-
-    /* Top navigation */
-    .top-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 8px;
-      margin-bottom: 22px;
-      font-size: 0.78rem;
-      color: #777;
-      letter-spacing: 0.03em;
-    }
-
-    .top-nav span { padding: 2px 0; }
-
-    .page-badge {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: var(--nav-blue);
-      color: #fff;
-      font-weight: 800;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(41, 128, 185, 0.35);
     }
 
     /* Article header */
@@ -202,20 +172,6 @@
       background: linear-gradient(145deg, #5dade2, #2980b9);
     }
 
-    .profile__icon {
-      position: absolute;
-      top: -10px;
-      font-family: "Fredoka", sans-serif;
-      font-weight: 700;
-      color: var(--red);
-      font-size: 1.6rem;
-      z-index: 3;
-      text-shadow: 1px 1px 0 #fff;
-    }
-
-    .profile--gabriele .profile__icon { right: 0; }
-    .profile--sebastian .profile__icon { left: 0; }
-
     .profile__label {
       font-family: "Fredoka", sans-serif;
       font-weight: 600;
@@ -311,18 +267,6 @@
 
     .summary .sig { font-style: italic; color: #999; }
 
-    /* Decorative wifi svg inline */
-    .wifi-icon { width: 28px; height: 22px; }
-
-    /* Footer page num */
-    .page-foot {
-      text-align: right;
-      margin-top: 32px;
-      font-size: 0.82rem;
-      color: #bbb;
-      font-weight: 600;
-    }
-
     /* Responsive */
     @media (max-width: 700px) {
       .profiles {
@@ -347,17 +291,6 @@
 </head>
 <body>
   <div class="page">
-
-    <nav class="top-nav" aria-label="Navigation">
-      <div style="display:flex;gap:18px;flex-wrap:wrap;">
-        <span>Pratique</span>
-        <span>Station</span>
-        <span>1-2-3-4</span>
-        <span>Bilan</span>
-        <span>Grammaire</span>
-      </div>
-      <div class="page-badge">6</div>
-    </nav>
 
     <header class="article-head">
       <div class="bolero">Boléro</div>
@@ -425,8 +358,6 @@
         </p>
 
       </section>
-
-      <p class="page-foot">p. 6</p>
     </main>
 
   </div>
