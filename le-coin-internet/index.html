@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Le coin Internet – Boléro</title>
   <style>
     :root {
@@ -134,70 +137,6 @@
 
     .summary em { font-style: normal; color: #888; }
 
-    /* Bottom boxes */
-    .bottom {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .box {
-      border-radius: 8px;
-      padding: 18px 20px;
-    }
-
-    .box--vocab {
-      background: var(--box-soft);
-      border: 1px solid var(--border);
-    }
-
-    .box--phrases {
-      background: var(--box-warm);
-      border: 1px solid #e8d4a8;
-    }
-
-    .box h2 {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--red);
-      margin-bottom: 12px;
-    }
-
-    .box--phrases h2 {
-      font-size: 1rem;
-      letter-spacing: 0.05em;
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      list-style: none;
-    }
-
-    .tags li {
-      background: var(--white);
-      border: 1px solid var(--border);
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.88rem;
-    }
-
-    .phrases {
-      list-style: none;
-      font-size: 0.92rem;
-    }
-
-    .phrases li {
-      padding: 4px 0;
-    }
-
-    .phrases li::before {
-      content: "→ ";
-      color: var(--orange);
-    }
-
     /* Page number */
     .page-num {
       text-align: right;
@@ -214,10 +153,6 @@
 
       .profile__avatar {
         margin: 0 auto;
-      }
-
-      .bottom {
-        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -263,36 +198,6 @@
         <p class="summary">
           On peut voir que pour Gabriele et Sebastian, il est surtout important d'entrer en contact avec les amis, par courriel ou par le chat. Mais on voit aussi qu'Internet, ça prend du temps – qu'on n'a plus pour faire autre chose. <em>Enzo</em>
         </p>
-      </section>
-
-      <section class="bottom">
-        <div class="box box--vocab">
-          <h2>Pour vos interviews, vous pouvez utiliser les mots suivants :</h2>
-          <ul class="tags">
-            <li>dormir</li>
-            <li>sites Internet</li>
-            <li>avoir le droit de faire qc</li>
-            <li>sortir</li>
-            <li>copains</li>
-            <li>préféré(e)</li>
-            <li>utiliser qc</li>
-            <li>parents</li>
-            <li>surfer</li>
-            <li>important</li>
-          </ul>
-        </div>
-
-        <aside class="box box--phrases">
-          <h2>ON DIT</h2>
-          <ul class="phrases">
-            <li>Comment est-ce que… ?</li>
-            <li>À quelle heure est-ce que… ?</li>
-            <li>Combien de temps est-ce que… ?</li>
-            <li>Quand est-ce que… ?</li>
-            <li>Quels/Quelles sont tes… ?</li>
-            <li>Que disent… ?</li>
-          </ul>
-        </aside>
       </section>
 
       <p class="page-num">p. 6</p>
