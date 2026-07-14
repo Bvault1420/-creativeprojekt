@@ -94,16 +94,22 @@
       align-items: start;
     }
 
-    .profile__photo {
+    .profile__avatar {
       width: 100px;
       height: 100px;
       border-radius: 50%;
       border: 3px solid var(--border);
-      object-fit: cover;
-      object-position: center top;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
       flex-shrink: 0;
-      background: #eee;
     }
+
+    .profile__avatar--gabriele { background: #e67e73; }
+    .profile__avatar--sebastian { background: #5b9bd5; }
 
     .profile__name {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -145,7 +151,7 @@
         text-align: center;
       }
 
-      .profile__photo {
+      .profile__avatar {
         margin: 0 auto;
       }
     }
@@ -168,11 +174,7 @@
         <div class="profiles">
 
           <article class="profile">
-            <img
-              class="profile__photo"
-              src="images/gabriele.jpg"
-              alt="Gabriele"
-            />
+            <div class="profile__avatar profile__avatar--gabriele" aria-hidden="true">G</div>
             <div>
               <p class="profile__name">Gabriele, 13 ans – 4e</p>
               <div class="profile__text">
@@ -182,11 +184,7 @@
           </article>
 
           <article class="profile">
-            <img
-              class="profile__photo"
-              src="images/sebastian.jpg"
-              alt="Sebastian"
-            />
+            <div class="profile__avatar profile__avatar--sebastian" aria-hidden="true">S</div>
             <div>
               <p class="profile__name">Sebastian, 13 ans – 4e</p>
               <div class="profile__text">
