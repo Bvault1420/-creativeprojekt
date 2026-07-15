@@ -256,6 +256,142 @@
 
       .bubble--grey::after { left: 26px; }
     }
+
+    /* Quiz */
+    .quiz {
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 2px dashed #ddd;
+    }
+
+    .quiz__title {
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--rust);
+      margin-bottom: 4px;
+    }
+
+    .quiz__subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .quiz__card {
+      background: var(--yellow);
+      border: 2px solid #e8d9a8;
+      border-radius: 16px;
+      padding: 22px 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+    }
+
+    .quiz__meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .quiz__score {
+      color: var(--red);
+      font-family: "Fredoka", sans-serif;
+    }
+
+    .quiz__statement {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 20px;
+      min-height: 3.2em;
+      line-height: 1.45;
+    }
+
+    .quiz__buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quiz__btn {
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      padding: 14px 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+      color: #fff;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+    }
+
+    .quiz__btn:active { transform: scale(0.97); }
+    .quiz__btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .quiz__btn--vrai { background: linear-gradient(145deg, #27ae60, #1e8449); }
+    .quiz__btn--faux { background: linear-gradient(145deg, #e74c3c, #c0392b); }
+
+    .quiz__feedback {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .quiz__feedback.is-visible { display: block; }
+    .quiz__feedback--ok { background: #d5f5e3; border: 1px solid #27ae60; color: #1e5631; }
+    .quiz__feedback--bad { background: #fadbd8; border: 1px solid #e74c3c; color: #922b21; }
+
+    .quiz__result {
+      text-align: center;
+      display: none;
+    }
+
+    .quiz__result.is-visible { display: block; animation: fadeIn 0.4s ease; }
+
+    .quiz__result-score {
+      font-family: "Fredoka", sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--rust);
+      margin: 12px 0 8px;
+    }
+
+    .quiz__result-msg {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .quiz__replay {
+      font-family: "Fredoka", sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 12px 28px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+
+    .quiz__replay:hover { background: var(--red-dark); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 500px) {
+      .quiz__buttons { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -270,25 +406,7 @@
     <main>
       <section class="paper">
 
-        <div class="paper-top">
-          <div class="fishing" aria-hidden="true">
-            <svg viewBox="0 0 100 95" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="46" fill="none" stroke="#c0392b" stroke-width="2" stroke-dasharray="4 3"/>
-              <rect x="32" y="38" width="48" height="34" rx="3" fill="#5dade2" stroke="#333" stroke-width="1.2"/>
-              <rect x="36" y="42" width="40" height="26" fill="#aed6f1"/>
-              <ellipse cx="56" cy="54" rx="9" ry="4.5" fill="#27ae60"/>
-              <polygon points="64,54 71,52 71,56" fill="#1e8449"/>
-              <circle cx="51" cy="53" r="1.2" fill="#333"/>
-              <rect x="50" y="72" width="12" height="4" fill="#666"/>
-              <rect x="44" y="76" width="24" height="3" rx="1" fill="#888"/>
-              <circle cx="20" cy="32" r="7" fill="#f5cba7" stroke="#333" stroke-width="0.8"/>
-              <rect x="14" y="39" width="11" height="16" rx="2" fill="#3498db" stroke="#333" stroke-width="0.8"/>
-              <line x1="24" y1="41" x2="52" y2="22" stroke="#8B4513" stroke-width="2"/>
-              <path d="M52,22 Q58,38 54,52" fill="none" stroke="#aaa" stroke-width="0.8"/>
-            </svg>
-          </div>
-          <p class="paper-intro-line">Deux élèves de notre collège racontent comment ils utilisent Internet au quotidien.</p>
-        </div>
+        <p class="paper-intro-line">Deux élèves de notre collège racontent comment ils utilisent Internet au quotidien.</p>
 
         <div class="profiles">
 
@@ -323,9 +441,173 @@
 
         </div>
 
+        <!-- Quiz Vrai ou Faux -->
+        <section class="quiz" id="quiz">
+          <h2 class="quiz__title">🌐 Vrai ou Faux ?</h2>
+          <p class="quiz__subtitle">Internet en France – Teste tes connaissances !</p>
+
+          <div class="quiz__card" id="quiz-game">
+            <div class="quiz__meta">
+              <span id="quiz-progress">Question 1 / 10</span>
+              <span class="quiz__score">Score : <span id="quiz-score">0</span></span>
+            </div>
+            <p class="quiz__statement" id="quiz-statement"></p>
+            <div class="quiz__buttons">
+              <button class="quiz__btn quiz__btn--vrai" id="btn-vrai" type="button">Vrai ✓</button>
+              <button class="quiz__btn quiz__btn--faux" id="btn-faux" type="button">Faux ✗</button>
+            </div>
+            <div class="quiz__feedback" id="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz__card quiz__result" id="quiz-result">
+            <p class="quiz__result-score" id="result-score"></p>
+            <p class="quiz__result-msg" id="result-msg"></p>
+            <button class="quiz__replay" id="btn-replay" type="button">Rejouer</button>
+          </div>
+        </section>
+
       </section>
     </main>
 
   </div>
+
+  <script>
+    const questions = [
+      {
+        text: "En France, beaucoup de jeunes utilisent Internet.",
+        answer: true,
+        explain: "C'est vrai ! Beaucoup de collégiens utilisent Internet chaque jour."
+      },
+      {
+        text: "On peut envoyer des courriels à ses amis sur Internet.",
+        answer: true,
+        explain: "C'est vrai ! Comme Sebastian dans le texte."
+      },
+      {
+        text: "En France, Internet est interdit pour les jeunes.",
+        answer: false,
+        explain: "C'est faux ! Internet n'est pas interdit, mais les parents peuvent mettre des règles."
+      },
+      {
+        text: "On peut regarder des vidéos et écouter de la musique sur Internet.",
+        answer: true,
+        explain: "C'est vrai ! Gabriele aime faire ça."
+      },
+      {
+        text: "Sur Internet, on ne peut pas chercher d'informations.",
+        answer: false,
+        explain: "C'est faux ! On peut chercher des informations, par exemple pour le sport ou l'école."
+      },
+      {
+        text: "Internet aide à rester en contact avec ses copains.",
+        answer: true,
+        explain: "C'est vrai ! C'est important pour Gabriele et Sebastian."
+      },
+      {
+        text: "Tous les jeunes passent la nuit sur Internet.",
+        answer: false,
+        explain: "C'est faux ! Sebastian préfère dormir."
+      },
+      {
+        text: "Les parents peuvent limiter le temps sur Internet.",
+        answer: true,
+        explain: "C'est vrai ! Par exemple, pas d'Internet après 21 heures."
+      },
+      {
+        text: "On ne peut pas écrire un blog sur Internet.",
+        answer: false,
+        explain: "C'est faux ! Gabriele a son propre blog."
+      },
+      {
+        text: "Internet ne prend pas de temps.",
+        answer: false,
+        explain: "C'est faux ! Internet prend du temps – on a moins de temps pour autre chose."
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let answered = false;
+
+    const gameEl = document.getElementById("quiz-game");
+    const resultEl = document.getElementById("quiz-result");
+    const statementEl = document.getElementById("quiz-statement");
+    const progressEl = document.getElementById("quiz-progress");
+    const scoreEl = document.getElementById("quiz-score");
+    const feedbackEl = document.getElementById("quiz-feedback");
+    const btnVrai = document.getElementById("btn-vrai");
+    const btnFaux = document.getElementById("btn-faux");
+    const btnReplay = document.getElementById("btn-replay");
+    const resultScoreEl = document.getElementById("result-score");
+    const resultMsgEl = document.getElementById("result-msg");
+
+    function showQuestion() {
+      answered = false;
+      feedbackEl.classList.remove("is-visible", "quiz__feedback--ok", "quiz__feedback--bad");
+      btnVrai.disabled = false;
+      btnFaux.disabled = false;
+      statementEl.textContent = questions[current].text;
+      progressEl.textContent = "Question " + (current + 1) + " / " + questions.length;
+      scoreEl.textContent = score;
+    }
+
+    function handleAnswer(userSaysVrai) {
+      if (answered) return;
+      answered = true;
+      btnVrai.disabled = true;
+      btnFaux.disabled = true;
+
+      const q = questions[current];
+      const correct = userSaysVrai === q.answer;
+
+      if (correct) {
+        score++;
+        scoreEl.textContent = score;
+        feedbackEl.textContent = "Bravo ! C'est correct. " + q.explain;
+        feedbackEl.className = "quiz__feedback is-visible quiz__feedback--ok";
+      } else {
+        const bonne = q.answer ? "Vrai" : "Faux";
+        feedbackEl.textContent = "Dommage ! La bonne réponse était : " + bonne + ". " + q.explain;
+        feedbackEl.className = "quiz__feedback is-visible quiz__feedback--bad";
+      }
+
+      setTimeout(function () {
+        current++;
+        if (current < questions.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      }, 2200);
+    }
+
+    function showResult() {
+      gameEl.style.display = "none";
+      resultEl.classList.add("is-visible");
+      resultScoreEl.textContent = "Tu as " + score + " sur " + questions.length + " bonnes réponses !";
+
+      if (score >= 8) {
+        resultMsgEl.textContent = "Excellent ! Tu connais bien Internet !";
+      } else if (score >= 5) {
+        resultMsgEl.textContent = "Pas mal ! Continue à apprendre !";
+      } else {
+        resultMsgEl.textContent = "Tu peux encore progresser. Rejoue !";
+      }
+    }
+
+    function resetQuiz() {
+      current = 0;
+      score = 0;
+      gameEl.style.display = "block";
+      resultEl.classList.remove("is-visible");
+      showQuestion();
+    }
+
+    btnVrai.addEventListener("click", function () { handleAnswer(true); });
+    btnFaux.addEventListener("click", function () { handleAnswer(false); });
+    btnReplay.addEventListener("click", resetQuiz);
+
+    showQuestion();
+  </script>
 </body>
 </html>
