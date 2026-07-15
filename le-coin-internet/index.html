@@ -431,11 +431,11 @@
             </div>
             <div class="bubble bubble--grey">
               <p><strong>Salut,</strong> moi, c'est Sebastian. J'ai 13 ans.</p>
-              <p>Sur Internet, j'écris des courriels à des amis et parfois, je cherche des informations.</p>
-              <p>J'ai souvent des invitations pour le chat, mais je ne participe pas parce que ça ne me dit rien.</p>
-              <p>Pour moi, il est important de sortir et de discuter avec mes copains en réalité.</p>
-              <p>J'ai des copains qui passent la nuit à chatter sur Internet. C'est pourquoi ils sont toujours fatigués le matin !</p>
-              <p>Mais moi, je préfère dormir. Bon, je pars, j'ai sport, maintenant ! <strong>Salut !</strong></p>
+              <p>Sur Internet, j'écris des mails à mes amis. Parfois, je cherche des infos.</p>
+              <p>J'ai des invitations pour le chat. Mais je ne participe pas. Ça ne me dit rien.</p>
+              <p>Pour moi, c'est important de sortir. J'aime parler avec mes copains dehors.</p>
+              <p>Mes copains passent la nuit sur Internet. Le matin, ils sont fatigués !</p>
+              <p>Moi, je préfère dormir. Bon, je pars ! J'ai sport. <strong>Salut !</strong></p>
             </div>
           </article>
 
@@ -563,11 +563,11 @@
       if (correct) {
         score++;
         scoreEl.textContent = score;
-        feedbackEl.textContent = "Bravo ! C'est correct. " + q.explain;
+        feedbackEl.textContent = "Bravo ! " + q.explain;
         feedbackEl.className = "quiz__feedback is-visible quiz__feedback--ok";
       } else {
         const bonne = q.answer ? "Vrai" : "Faux";
-        feedbackEl.textContent = "Dommage ! La bonne réponse était : " + bonne + ". " + q.explain;
+        feedbackEl.textContent = "Dommage ! C'était " + bonne + ". " + q.explain;
         feedbackEl.className = "quiz__feedback is-visible quiz__feedback--bad";
       }
 
