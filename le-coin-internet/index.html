@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta name="description" content="Le coin Internet – Trois élèves racontent leur usage d'Internet. Quiz Vrai ou Faux et traduction." />
   <title>Le coin Internet – Boléro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -23,6 +26,8 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: "Nunito", -apple-system, sans-serif;
@@ -171,6 +176,8 @@
       color: var(--red);
       margin-bottom: 4px;
     }
+
+    .profile__label--right { text-align: right; }
 
     /* Speech bubbles */
     .bubble {
@@ -345,6 +352,23 @@
     .quiz__level--easy { background: #d5f5e3; color: #1e8449; }
     .quiz__level--medium { background: #fdebd0; color: #b7950b; }
     .quiz__level--hard { background: #fadbd8; color: #922b21; }
+    .quiz__level--translate { background: #d6eaf8; color: #1f618d; }
+
+    .quiz__progress-bar {
+      height: 6px;
+      background: #e8d9a8;
+      border-radius: 6px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .quiz__progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), var(--orange));
+      border-radius: 6px;
+      transition: width 0.35s ease;
+      width: 0%;
+    }
 
     .quiz__score {
       color: var(--red);
@@ -380,7 +404,12 @@
     }
 
     .quiz__btn:active { transform: scale(0.97); }
+    .quiz__btn:hover:not(:disabled) { filter: brightness(1.06); }
     .quiz__btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .quiz__btn:focus-visible {
+      outline: 3px solid var(--orange);
+      outline-offset: 2px;
+    }
 
     .quiz__btn--vrai { background: linear-gradient(145deg, #27ae60, #1e8449); }
     .quiz__btn--faux { background: linear-gradient(145deg, #e74c3c, #c0392b); }
@@ -468,11 +497,24 @@
     .quiz__input:focus {
       outline: none;
       border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(211, 84, 0, 0.15);
     }
 
     .quiz__btn--valider {
       width: 100%;
       background: linear-gradient(145deg, #2980b9, #1f618d);
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     @keyframes fadeIn {
@@ -481,7 +523,11 @@
     }
 
     @media (max-width: 500px) {
+      .page { padding: 12px 14px 40px; }
+      .paper { padding: 20px 16px 36px; }
+      .quiz__card { padding: 18px 16px; }
       .quiz__buttons { grid-template-columns: 1fr; }
+      .profile__avatar { width: 72px; height: 72px; font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -516,7 +562,7 @@
 
           <!-- Sebastian -->
           <article class="profile profile--sebastian">
-            <p class="profile__label" style="text-align:right;">Sebastian · 13 ans · 5e</p>
+            <p class="profile__label profile__label--right">Sebastian · 13 ans · 5e</p>
             <div class="profile__top">
               <div class="profile__avatar profile__avatar--sebastian">S</div>
             </div>
@@ -547,7 +593,7 @@
         </div>
 
         <!-- Quiz Vrai ou Faux -->
-        <section class="quiz" id="quiz">
+        <section class="quiz" id="quiz" aria-label="Quiz Vrai ou Faux">
           <h2 class="quiz__title">🌐 Vrai ou Faux ?</h2>
           <p class="quiz__subtitle">France, histoire et Internet – 10 questions, de facile à difficile ! (la dernière : traduction)</p>
 
@@ -556,18 +602,22 @@
               <span id="quiz-progress">Question 1 / 10</span>
               <span class="quiz__score">Score : <span id="quiz-score">0</span></span>
             </div>
+            <div class="quiz__progress-bar" aria-hidden="true">
+              <div class="quiz__progress-fill" id="quiz-progress-fill"></div>
+            </div>
             <span class="quiz__level quiz__level--easy" id="quiz-level">Facile</span>
             <p class="quiz__statement" id="quiz-statement"></p>
             <div class="quiz__buttons" id="quiz-buttons">
-              <button class="quiz__btn quiz__btn--vrai" id="btn-vrai" type="button">Vrai ✓</button>
-              <button class="quiz__btn quiz__btn--faux" id="btn-faux" type="button">Faux ✗</button>
+              <button class="quiz__btn quiz__btn--vrai" id="btn-vrai" type="button" aria-label="Antwort: Vrai">Vrai ✓</button>
+              <button class="quiz__btn quiz__btn--faux" id="btn-faux" type="button" aria-label="Antwort: Faux">Faux ✗</button>
             </div>
             <div class="quiz__translate" id="quiz-translate">
               <p class="quiz__prompt-de" id="quiz-prompt-de"></p>
-              <input class="quiz__input" id="quiz-input" type="text" placeholder="Écris la phrase en français…" autocomplete="off" />
+              <label class="visually-hidden" for="quiz-input">Traduction en français</label>
+              <input class="quiz__input" id="quiz-input" type="text" placeholder="Écris la phrase en français…" autocomplete="off" spellcheck="false" />
               <button class="quiz__btn quiz__btn--valider" id="btn-valider" type="button">Valider</button>
             </div>
-            <div class="quiz__feedback" id="quiz-feedback"></div>
+            <div class="quiz__feedback" id="quiz-feedback" role="status" aria-live="polite"></div>
           </div>
 
           <div class="quiz__card quiz__result" id="quiz-result">
@@ -691,6 +741,7 @@
     const translateEl = document.getElementById("quiz-translate");
     const promptDEEl = document.getElementById("quiz-prompt-de");
     const inputEl = document.getElementById("quiz-input");
+    const progressFillEl = document.getElementById("quiz-progress-fill");
     const resultScoreEl = document.getElementById("result-score");
     const levelEl = document.getElementById("quiz-level");
 
@@ -715,10 +766,16 @@
 
     function setLevelBadge(q) {
       levelEl.textContent = q.levelLabel;
-      levelEl.className = "quiz__level quiz__level--" + q.level;
+      const levelClass = q.type === "translate" ? "translate" : q.level;
+      levelEl.className = "quiz__level quiz__level--" + levelClass;
     }
 
-    function showFeedback(correct, q, extra) {
+    function updateProgressBar() {
+      const pct = (current / questions.length) * 100;
+      progressFillEl.style.width = pct + "%";
+    }
+
+    function showFeedback(correct, q) {
       if (correct) {
         score++;
         scoreEl.textContent = score;
@@ -763,6 +820,7 @@
         statementEl.textContent = "Écris cette phrase en français :";
         promptDEEl.textContent = "🇩🇪 " + q.german;
         inputEl.value = "";
+        setTimeout(function () { inputEl.focus(); }, 80);
       } else {
         statementEl.textContent = q.text;
       }
@@ -770,6 +828,7 @@
       setLevelBadge(q);
       progressEl.textContent = "Question " + (current + 1) + " / " + questions.length;
       scoreEl.textContent = score;
+      updateProgressBar();
     }
 
     function handleAnswer(userSaysVrai) {
@@ -805,6 +864,7 @@
     function showResult() {
       gameEl.style.display = "none";
       resultEl.classList.add("is-visible");
+      progressFillEl.style.width = "100%";
       resultScoreEl.textContent = "Tu as " + score + " sur " + questions.length + " bonnes réponses !";
 
       if (score >= 8) {
