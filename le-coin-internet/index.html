@@ -290,11 +290,27 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
       font-size: 0.85rem;
       color: var(--muted);
-      margin-bottom: 16px;
+      margin-bottom: 10px;
       font-weight: 600;
     }
+
+    .quiz__level {
+      display: inline-block;
+      font-family: "Fredoka", sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .quiz__level--easy { background: #d5f5e3; color: #1e8449; }
+    .quiz__level--medium { background: #fdebd0; color: #b7950b; }
+    .quiz__level--hard { background: #fadbd8; color: #922b21; }
 
     .quiz__score {
       color: var(--red);
