@@ -17,6 +17,7 @@
       --rust: #a04000;
       --blue-bubble: #dceefb;
       --grey-bubble: #ececec;
+      --green-bubble: #e5f5e0;
       --text: #2c2c2c;
       --muted: #5a5a5a;
     }
@@ -111,8 +112,8 @@
     /* Profiles grid */
     .profiles {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px 16px;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px 14px;
       margin-top: 8px;
     }
 
@@ -159,6 +160,10 @@
       background: linear-gradient(145deg, #5dade2, #2980b9);
     }
 
+    .profile__avatar--mats {
+      background: linear-gradient(145deg, #58d68d, #27ae60);
+    }
+
     .profile__label {
       font-family: "Fredoka", sans-serif;
       font-weight: 600;
@@ -192,6 +197,11 @@
     .bubble--grey {
       background: var(--grey-bubble);
       border: 2px solid #d5d5d5;
+    }
+
+    .bubble--green {
+      background: var(--green-bubble);
+      border: 2px solid #b8ddb8;
     }
 
     .bubble--blue::before {
@@ -238,12 +248,36 @@
       border-bottom: 10px solid var(--grey-bubble);
     }
 
+    .bubble--green::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 24px;
+      width: 0; height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 12px solid #b8ddb8;
+    }
+
+    .bubble--green::after {
+      content: "";
+      position: absolute;
+      top: -7px;
+      left: 26px;
+      width: 0; height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 10px solid var(--green-bubble);
+    }
+
     /* Responsive */
-    @media (max-width: 700px) {
+    @media (max-width: 900px) {
       .profiles {
         grid-template-columns: 1fr;
       }
+    }
 
+    @media (max-width: 700px) {
       .profile--sebastian .profile__top {
         flex-direction: row;
       }
@@ -422,7 +456,7 @@
     <main>
       <section class="paper">
 
-        <p class="paper-intro-line">Deux élèves de notre collège racontent comment ils utilisent Internet au quotidien.</p>
+        <p class="paper-intro-line">Trois élèves de notre collège racontent comment ils utilisent Internet au quotidien.</p>
 
         <div class="profiles">
 
@@ -455,18 +489,33 @@
             </div>
           </article>
 
+          <!-- Mats -->
+          <article class="profile profile--mats">
+            <p class="profile__label">Mats · 13 ans · 5e</p>
+            <div class="profile__top">
+              <div class="profile__avatar profile__avatar--mats">M</div>
+            </div>
+            <div class="bubble bubble--green">
+              <p><strong>Bonjour !</strong> Je m'appelle Mats, j'ai 13 ans.</p>
+              <p>J'adore surfer et chatter avec mes amis sur Internet.</p>
+              <p>J'écoute de la musique sur Internet. Avec Internet, je peux rester en contact avec mes copains.</p>
+              <p>Bon, je pars au sport ! <strong>Salut !</strong></p>
+            </div>
+          </article>
+
         </div>
 
         <!-- Quiz Vrai ou Faux -->
         <section class="quiz" id="quiz">
           <h2 class="quiz__title">🌐 Vrai ou Faux ?</h2>
-          <p class="quiz__subtitle">France, histoire et Internet – des questions faciles !</p>
+          <p class="quiz__subtitle">France, histoire et Internet – 9 questions, de facile à difficile !</p>
 
           <div class="quiz__card" id="quiz-game">
             <div class="quiz__meta">
-              <span id="quiz-progress">Question 1 / 10</span>
+              <span id="quiz-progress">Question 1 / 9</span>
               <span class="quiz__score">Score : <span id="quiz-score">0</span></span>
             </div>
+            <span class="quiz__level quiz__level--easy" id="quiz-level">Facile</span>
             <p class="quiz__statement" id="quiz-statement"></p>
             <div class="quiz__buttons">
               <button class="quiz__btn quiz__btn--vrai" id="btn-vrai" type="button">Vrai ✓</button>
@@ -489,55 +538,71 @@
 
   <script>
     const questions = [
+      // Facile (1–3)
       {
+        level: "easy",
+        levelLabel: "Facile",
         text: "Paris est la capitale de la France.",
         answer: true,
         explain: "Oui ! Paris est la grande ville de la France."
       },
       {
-        text: "La France est en Europe.",
+        level: "easy",
+        levelLabel: "Facile",
+        text: "La France est un pays en Europe.",
         answer: true,
-        explain: "Oui ! La France est un pays en Europe."
+        explain: "Oui ! La France est en Europe."
       },
       {
-        text: "La Tour Eiffel est à Berlin.",
+        level: "easy",
+        levelLabel: "Facile",
+        text: "On peut utiliser Internet en France.",
+        answer: true,
+        explain: "Oui ! Internet est utilisé en France."
+      },
+      // Moyen (4–6)
+      {
+        level: "medium",
+        levelLabel: "Moyen",
+        text: "La Tour Eiffel est un monument célèbre à Paris.",
+        answer: true,
+        explain: "Oui ! La Tour Eiffel est très connue en France."
+      },
+      {
+        level: "medium",
+        levelLabel: "Moyen",
+        text: "Lyon est la capitale de la France.",
         answer: false,
-        explain: "Non ! La Tour Eiffel est à Paris."
+        explain: "Non ! La capitale, c'est Paris. Lyon est une autre grande ville."
       },
       {
-        text: "Le français est la langue de la France.",
+        level: "medium",
+        levelLabel: "Moyen",
+        text: "En France, beaucoup de jeunes utilisent Internet pour parler avec leurs amis.",
         answer: true,
-        explain: "Oui ! En France, on parle français."
+        explain: "Oui ! Comme Gabriele et Sebastian dans le texte."
       },
+      // Difficile (7–9)
       {
-        text: "La Bastille est un monument français.",
+        level: "hard",
+        levelLabel: "Difficile",
+        text: "Napoléon était un empereur français.",
         answer: true,
-        explain: "Oui ! La Bastille est célèbre en France."
+        explain: "Oui ! Napoléon est une personne importante de l'histoire de France."
       },
       {
-        text: "Napoléon était français.",
+        level: "hard",
+        levelLabel: "Difficile",
+        text: "La Révolution française a commencé en 1789.",
         answer: true,
-        explain: "Oui ! Napoléon est important dans l'histoire de France."
+        explain: "Oui ! 1789 est une date importante en France."
       },
       {
-        text: "La France est en Amérique.",
+        level: "hard",
+        levelLabel: "Difficile",
+        text: "En France, toutes les familles ont les mêmes règles pour Internet.",
         answer: false,
-        explain: "Non ! La France est en Europe."
-      },
-      {
-        text: "On peut chatter sur Internet.",
-        answer: true,
-        explain: "Oui ! Gabriele aime chatter avec ses amis."
-      },
-      {
-        text: "Internet est interdit en France.",
-        answer: false,
-        explain: "Non ! Internet n'est pas interdit."
-      },
-      {
-        text: "On peut regarder des vidéos sur Internet.",
-        answer: true,
-        explain: "Oui ! C'est possible sur Internet."
+        explain: "Non ! Chaque famille peut avoir des règles différentes, par exemple après 21 heures."
       }
     ];
 
@@ -555,14 +620,23 @@
     const btnFaux = document.getElementById("btn-faux");
     const btnReplay = document.getElementById("btn-replay");
     const resultScoreEl = document.getElementById("result-score");
+    const levelEl = document.getElementById("quiz-level");
+
     const resultMsgEl = document.getElementById("result-msg");
+
+    function setLevelBadge(q) {
+      levelEl.textContent = q.levelLabel;
+      levelEl.className = "quiz__level quiz__level--" + q.level;
+    }
 
     function showQuestion() {
       answered = false;
       feedbackEl.classList.remove("is-visible", "quiz__feedback--ok", "quiz__feedback--bad");
       btnVrai.disabled = false;
       btnFaux.disabled = false;
-      statementEl.textContent = questions[current].text;
+      const q = questions[current];
+      statementEl.textContent = q.text;
+      setLevelBadge(q);
       progressEl.textContent = "Question " + (current + 1) + " / " + questions.length;
       scoreEl.textContent = score;
     }
@@ -602,9 +676,9 @@
       resultEl.classList.add("is-visible");
       resultScoreEl.textContent = "Tu as " + score + " sur " + questions.length + " bonnes réponses !";
 
-      if (score >= 8) {
-        resultMsgEl.textContent = "Excellent ! Tu connais bien Internet !";
-      } else if (score >= 5) {
+      if (score >= 7) {
+        resultMsgEl.textContent = "Excellent ! Tu connais bien la France et Internet !";
+      } else if (score >= 4) {
         resultMsgEl.textContent = "Pas mal ! Continue à apprendre !";
       } else {
         resultMsgEl.textContent = "Tu peux encore progresser. Rejoue !";
