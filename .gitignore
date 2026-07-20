@@ -1,5 +1,4 @@
-.tablet-url.txt
-.localhost-info.json
-le-coin-internet/.tablet-url.txt
 .DS_Store
 __pycache__/
+.tablet-url.txt
+.localhost-info.json
