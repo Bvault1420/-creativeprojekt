@@ -1,13 +1,16 @@
 #!/bin/bash
 # Le coin Internet – Mac (Safari)
-cd "$(dirname "$0")"
+set -euo pipefail
 
-PORT=8080
+cd "$(dirname "$0")" || exit 1
+
+PORT="${PORT:-8080}"
 URL="http://127.0.0.1:${PORT}/"
 
 cleanup() {
-  if [[ -n "$SERVER_PID" ]] && kill -0 "$SERVER_PID" 2>/dev/null; then
-    kill "$SERVER_PID" 2>/dev/null
+  if [[ -n "${SERVER_PID:-}" ]] && kill -0 "$SERVER_PID" 2>/dev/null; then
+    kill "$SERVER_PID" 2>/dev/null || true
+    wait "$SERVER_PID" 2>/dev/null || true
   fi
 }
 trap cleanup EXIT INT TERM
@@ -16,9 +19,6 @@ echo ""
 echo "  Le coin Internet – Localhost (Mac / Safari)"
 echo "  ============================================"
 echo ""
-echo "  URL in Safari:"
-echo "  → ${URL}"
-echo ""
 
 if ! command -v python3 >/dev/null 2>&1; then
   echo "  Fehler: python3 fehlt."
@@ -26,13 +26,28 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-python3 -m http.server "$PORT" --bind 127.0.0.1 >/dev/null 2>&1 &
-SERVER_PID=$!
-sleep 1
+echo "  URL in Safari:"
+echo "  → ${URL}"
+echo ""
 
-if ! kill -0 "$SERVER_PID" 2>/dev/null; then
-  echo "  Fehler: Server konnte nicht gestartet werden."
-  echo "  Ist Port ${PORT} schon belegt?"
+python3 -m http.server "$PORT" --bind 127.0.0.1 &
+SERVER_PID=$!
+
+ready=0
+for _ in $(seq 1 20); do
+  if curl -fsS "$URL" >/dev/null 2>&1; then
+    ready=1
+    break
+  fi
+  if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+    echo "  Fehler: Server ist abgestürzt."
+    exit 1
+  fi
+  sleep 0.2
+done
+
+if [[ "$ready" -ne 1 ]]; then
+  echo "  Fehler: Server antwortet nicht auf ${URL}"
   exit 1
 fi
 
