@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
-# Startet einen Localhost-Server und öffnet den Browser.
+# Startet einen WLAN-fähigen Localhost-Server (PC + Safari auf iPad/Tablet).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT"
 
 PORT="${PORT:-8080}"
-URL="http://127.0.0.1:${PORT}/"
 
-# Freien Port finden, falls 8080 belegt ist
 is_port_free() {
   ! (echo >/dev/tcp/127.0.0.1/"$1") >/dev/null 2>&1
 }
@@ -27,40 +25,81 @@ if ! is_port_free "$PORT"; then
   for try in 8081 8082 8083 8090 8888; do
     if is_port_free "$try"; then
       PORT="$try"
-      URL="http://127.0.0.1:${PORT}/"
       break
     fi
   done
 fi
 
+# LAN-IP ermitteln (für Safari auf dem Tablet im gleichen WLAN)
+detect_lan_ip() {
+  local ip=""
+  if command -v ipconfig >/dev/null 2>&1 && [[ "$(uname -s)" == "Darwin" ]]; then
+    # macOS: aktive IP (en0/en1 …)
+    ip="$(ipconfig getifaddr en0 2>/dev/null || true)"
+    if [[ -z "$ip" ]]; then
+      ip="$(ipconfig getifaddr en1 2>/dev/null || true)"
+    fi
+  fi
+  if [[ -z "$ip" ]] && command -v hostname >/dev/null 2>&1; then
+    ip="$(hostname -I 2>/dev/null | awk '{print $1}' || true)"
+  fi
+  if [[ -z "$ip" ]] && command -v ip >/dev/null 2>&1; then
+    ip="$(ip -4 route get 1.1.1.1 2>/dev/null | awk '{for(i=1;i<=NF;i++) if($i=="src"){print $(i+1); exit}}' || true)"
+  fi
+  if [[ -z "$ip" ]]; then
+    ip="$(ifconfig 2>/dev/null | awk '/inet / && $2 != "127.0.0.1" {print $2; exit}' | sed 's/addr://' || true)"
+  fi
+  echo "$ip"
+}
+
+LAN_IP="$(detect_lan_ip)"
+LOCAL_URL="http://127.0.0.1:${PORT}/"
+if [[ -n "$LAN_IP" ]]; then
+  TABLET_URL="http://${LAN_IP}:${PORT}/"
+else
+  TABLET_URL="(IP nicht gefunden – in den Netzwerkeinstellungen nachschauen)"
+fi
+
+# URL für Tablet in Datei schreiben (zum Ablesen / Teilen)
+cat > "${ROOT}/.tablet-url.txt" <<EOF
+${TABLET_URL}
+EOF
+
 open_browser() {
   if command -v open >/dev/null 2>&1; then
-    # macOS
-    open "$URL" >/dev/null 2>&1 || true
+    open "$LOCAL_URL" >/dev/null 2>&1 || true
   elif command -v xdg-open >/dev/null 2>&1; then
-    # Linux
-    xdg-open "$URL" >/dev/null 2>&1 || true
+    xdg-open "$LOCAL_URL" >/dev/null 2>&1 || true
   elif command -v wslview >/dev/null 2>&1; then
-    wslview "$URL" >/dev/null 2>&1 || true
+    wslview "$LOCAL_URL" >/dev/null 2>&1 || true
   fi
 }
 
 echo ""
-echo "  Schulprojekte – Localhost"
-echo "  ========================="
+echo "  Schulprojekte – Localhost (PC + Tablet)"
+echo "  ======================================="
 echo ""
-echo "  Browser öffnet sich gleich:"
-echo "  → ${URL}"
+echo "  Am Computer (Browser öffnet sich):"
+echo "  → ${LOCAL_URL}"
+echo ""
+echo "  Am Tablet / iPad (Safari, gleiches WLAN):"
+echo "  → ${TABLET_URL}"
+echo ""
+echo "  So geht's auf dem Tablet:"
+echo "  1. Tablet und Computer im gleichen WLAN"
+echo "  2. Safari öffnen"
+echo "  3. Oben die Adresse eingeben (z. B. ${TABLET_URL})"
+echo "  4. Fertig – Seite wählen"
 echo ""
 echo "  Projekte:"
-echo "  • Le coin Internet     ${URL}le-coin-internet/"
-echo "  • Ultra-Cool Website   ${URL}Projekte%20Creative/"
-echo "  • DayFlow              ${URL}dayflow/"
+echo "  • Le coin Internet     …/le-coin-internet/"
+echo "  • Ultra-Cool Website   …/Projekte%20Creative/"
+echo "  • DayFlow              …/dayflow/"
 echo ""
-echo "  Server läuft... (Beenden mit Strg + C)"
+echo "  Server läuft im ganzen WLAN... (Beenden mit Strg + C)"
 echo ""
 
-# Browser kurz verzögert öffnen, damit der Server schon lauscht
 (sleep 0.6 && open_browser) &
 
-exec "$PYTHON" -m http.server "$PORT" --bind 127.0.0.1
+# 0.0.0.0 = erreichbar von PC UND Tablet im WLAN
+exec "$PYTHON" -m http.server "$PORT" --bind 0.0.0.0
