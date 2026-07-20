@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Schulprojekte – Übersicht und Localhost-Start." />
+  <title>Schulprojekte – Localhost</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --card: #1a2332;
+      --text: #e8eef5;
+      --muted: #8b9bb0;
+      --accent: #3d8bfd;
+      --accent2: #c0392b;
+      --line: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(61, 139, 253, 0.18), transparent 50%),
+        radial-gradient(ellipse at 90% 10%, rgba(192, 57, 43, 0.12), transparent 45%),
+        var(--bg);
+      padding: 40px 20px 60px;
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .lead {
+      color: var(--muted);
+      margin-bottom: 28px;
+      font-size: 1.05rem;
+    }
+
+    .hint {
+      background: rgba(61, 139, 253, 0.1);
+      border: 1px solid rgba(61, 139, 253, 0.25);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 28px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .hint code {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.9em;
+    }
+
+    .list {
+      display: grid;
+      gap: 14px;
+    }
+
+    a.project {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 20px;
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+
+    a.project:hover {
+      border-color: rgba(61, 139, 253, 0.55);
+      transform: translateY(-1px);
+    }
+
+    a.project h2 {
+      font-size: 1.15rem;
+      margin-bottom: 4px;
+    }
+
+    a.project p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .tag--fr { color: #e74c3c; }
+    .tag--crypto { color: #a78bfa; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Schulprojekte</h1>
+    <p class="lead">Localhost läuft – wähle eine Website:</p>
+
+    <div class="hint">
+      Server starten mit <code>start.sh</code> (Mac/Linux), <code>start.bat</code> (Windows)
+      oder <code>Oeffnen.command</code> (Mac Doppelklick). Dann öffnet sich
+      <code>http://localhost:8080</code> im Browser.
+    </div>
+
+    <div class="list">
+      <a class="project" href="le-coin-internet/">
+        <span class="tag tag--fr">Französisch</span>
+        <h2>Le coin Internet</h2>
+        <p>Lehrbuch-Seite mit Quiz Vrai/Faux und Übersetzung</p>
+      </a>
+
+      <a class="project" href="Projekte%20Creative/">
+        <span class="tag">Creative</span>
+        <h2>Meine Ultra-Cool Website</h2>
+        <p>Uhr, Todos, Quotes und Reaktionsspiel</p>
+      </a>
+
+      <a class="project" href="dayflow/">
+        <span class="tag tag--crypto">DayFlow</span>
+        <h2>Live Krypto Dashboard</h2>
+        <p>Charts, Watchlist, Login und Mehrsprachigkeit</p>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
