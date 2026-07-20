@@ -38,19 +38,19 @@ if defined LAN_IP (
 echo !TABLET_URL!> ".tablet-url.txt"
 
 echo.
-echo   Schulprojekte - Localhost (PC + Tablet)
-echo   =======================================
+echo   Schulprojekte - Localhost (PC + Handy + Tablet)
+echo   ===============================================
 echo.
 echo   Am Computer (Browser oeffnet sich):
 echo   -^> %LOCAL_URL%
 echo.
-echo   Am Tablet / iPad (Safari, gleiches WLAN):
+echo   Am Handy / Tablet (gleiches WLAN):
 echo   -^> !TABLET_URL!
 echo.
-echo   So geht's auf dem Tablet:
-echo   1. Tablet und Computer im gleichen WLAN
-echo   2. Safari oeffnen
-echo   3. Oben die Adresse eingeben
+echo   So geht's am Handy:
+echo   1. Handy und Computer im gleichen WLAN
+echo   2. Auf der PC-Seite den QR-Code mit der Handy-Kamera scannen
+echo   3. Oder die Adresse eintippen
 echo   4. Fertig - Seite waehlen
 echo.
 echo   Server laeuft im ganzen WLAN... (Beenden mit Strg + C)
