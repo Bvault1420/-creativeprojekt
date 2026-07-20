@@ -1,0 +1,2 @@
+# Optional: bessere Server-QR-Codes
+qrcode>=7.4
