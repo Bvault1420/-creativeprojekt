@@ -80,6 +80,24 @@
       text-transform: uppercase;
     }
 
+    .qr {
+      display: none;
+      width: 208px;
+      max-width: 62vw;
+      margin: 12px 0;
+      padding: 12px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .qr svg,
+    .qr img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
     .tablet-url {
       display: block;
       margin: 8px 0 10px;
@@ -178,19 +196,20 @@
     <p class="lead">Localhost läuft – wähle eine Website:</p>
 
     <div class="tablet-box" id="tabletBox">
-      <strong>Safari auf dem Tablet / iPad</strong>
-      <span>Gleiches WLAN wie der Computer, dann in Safari diese Adresse öffnen:</span>
+      <strong>Auf dem Handy öffnen</strong>
+      <span>Handy und Computer im <em>gleichen WLAN</em>. Dann einfach den QR-Code mit der Kamera scannen – oder die Adresse eintippen:</span>
+      <div class="qr" id="qr" role="img" aria-label="QR-Code zum Öffnen auf dem Handy"></div>
       <span class="tablet-url" id="tabletUrl">lädt…</span>
       <button type="button" class="copy-btn" id="copyBtn">Adresse kopieren</button>
       <p style="margin-top:10px;font-size:0.88rem;">
-        Tipp: Computer und Tablet müssen im <em>gleichen WLAN</em> sein.
-        Die Adresse steht auch im Terminal-Fenster nach dem Start.
+        Tipp: Kamera-App des Handys öffnen und auf den QR-Code halten – die Seite öffnet sich automatisch.
+        Klappt genauso am iPad / Tablet. Die Adresse steht auch im Terminal-Fenster nach dem Start.
       </p>
     </div>
 
     <div class="hint">
       Start: <code>start.sh</code> / <code>Oeffnen.command</code> (Mac) oder <code>start.bat</code> (Windows).
-      Am PC: <code>http://localhost:8080</code> – am Tablet die WLAN-Adresse oben.
+      Am PC: <code>http://localhost:8080</code> – am Handy den QR-Code scannen oder die WLAN-Adresse oben eintippen.
     </div>
 
     <div class="list">
@@ -214,17 +233,35 @@
     </div>
   </div>
 
+  <script src="assets/qrcode.min.js"></script>
   <script>
     (function () {
       var urlEl = document.getElementById("tabletUrl");
       var copyBtn = document.getElementById("copyBtn");
+      var qrEl = document.getElementById("qr");
       var host = location.hostname;
       var port = location.port || "80";
       var pageUrl = location.origin + "/";
 
-      // Wenn schon über WLAN-IP geöffnet (z. B. auf dem Tablet): diese URL anzeigen
+      // QR-Code der WLAN-Adresse zeichnen (offline, ohne Internet)
+      function renderQR(u) {
+        if (!qrEl || typeof qrcode === "undefined") return;
+        if (!/^https?:\/\//.test(u)) { qrEl.style.display = "none"; return; }
+        try {
+          var q = qrcode(0, "M");
+          q.addData(u);
+          q.make();
+          qrEl.innerHTML = q.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+          qrEl.style.display = "block";
+        } catch (e) {
+          qrEl.style.display = "none";
+        }
+      }
+
+      // Wenn schon über WLAN-IP geöffnet (z. B. auf dem Handy): diese URL anzeigen
       function setUrl(u) {
         urlEl.textContent = u;
+        renderQR(u);
         copyBtn.onclick = function () {
           if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(u).then(function () {

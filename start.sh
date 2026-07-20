@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Startet einen WLAN-fähigen Localhost-Server (PC + Safari auf iPad/Tablet).
+# Startet einen WLAN-fähigen Localhost-Server (PC + Handy + Tablet/iPad).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
@@ -76,19 +76,19 @@ open_browser() {
 }
 
 echo ""
-echo "  Schulprojekte – Localhost (PC + Tablet)"
-echo "  ======================================="
+echo "  Schulprojekte – Localhost (PC + Handy + Tablet)"
+echo "  ==============================================="
 echo ""
 echo "  Am Computer (Browser öffnet sich):"
 echo "  → ${LOCAL_URL}"
 echo ""
-echo "  Am Tablet / iPad (Safari, gleiches WLAN):"
+echo "  Am Handy / Tablet (gleiches WLAN):"
 echo "  → ${TABLET_URL}"
 echo ""
-echo "  So geht's auf dem Tablet:"
-echo "  1. Tablet und Computer im gleichen WLAN"
-echo "  2. Safari öffnen"
-echo "  3. Oben die Adresse eingeben (z. B. ${TABLET_URL})"
+echo "  So geht's am Handy:"
+echo "  1. Handy und Computer im gleichen WLAN"
+echo "  2. Auf der PC-Seite den QR-Code mit der Handy-Kamera scannen"
+echo "  3. Oder die Adresse eintippen: ${TABLET_URL}"
 echo "  4. Fertig – Seite wählen"
 echo ""
 echo "  Projekte:"
