@@ -1,268 +1,119 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Schulprojekte – Übersicht für Computer und Safari auf dem Tablet." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Schulprojekte" />
-  <meta name="format-detection" content="telephone=no" />
-  <title>Schulprojekte – Localhost</title>
-  <style>
-    :root {
-      --bg: #0f1419;
-      --card: #1a2332;
-      --text: #e8eef5;
-      --muted: #8b9bb0;
-      --accent: #3d8bfd;
-      --accent2: #c0392b;
-      --line: rgba(255, 255, 255, 0.08);
-      --ok: #3dd68c;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(ellipse at 20% 0%, rgba(61, 139, 253, 0.18), transparent 50%),
-        radial-gradient(ellipse at 90% 10%, rgba(192, 57, 43, 0.12), transparent 45%),
-        var(--bg);
-      padding: 40px 20px 60px;
-      padding-left: max(20px, env(safe-area-inset-left));
-      padding-right: max(20px, env(safe-area-inset-right));
-      line-height: 1.5;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .wrap {
-      max-width: 720px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      font-size: clamp(1.8rem, 4vw, 2.4rem);
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
-
-    .lead {
-      color: var(--muted);
-      margin-bottom: 22px;
-      font-size: 1.05rem;
-    }
-
-    .hint,
-    .tablet-box {
-      background: rgba(61, 139, 253, 0.1);
-      border: 1px solid rgba(61, 139, 253, 0.25);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .tablet-box {
-      background: rgba(61, 215, 140, 0.08);
-      border-color: rgba(61, 215, 140, 0.35);
-    }
-
-    .tablet-box strong {
-      color: var(--ok);
-      display: block;
-      margin-bottom: 6px;
-      font-size: 0.8rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .tablet-url {
-      display: block;
-      margin: 8px 0 10px;
-      padding: 12px 14px;
-      background: rgba(0, 0, 0, 0.35);
-      border-radius: 10px;
-      color: var(--text);
-      font-size: clamp(1rem, 3.5vw, 1.15rem);
-      font-weight: 600;
-      word-break: break-all;
-      -webkit-user-select: all;
-      user-select: all;
-    }
-
-    .hint code,
-    .tablet-box code {
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.06);
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-size: 0.9em;
-    }
-
-    .list {
-      display: grid;
-      gap: 14px;
-      margin-top: 22px;
-    }
-
-    a.project {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 18px 20px;
-      transition: border-color 0.15s ease, transform 0.15s ease;
-      min-height: 44px;
-    }
-
-    a.project:hover,
-    a.project:focus-visible {
-      border-color: rgba(61, 139, 253, 0.55);
-      transform: translateY(-1px);
-      outline: none;
-    }
-
-    a.project h2 {
-      font-size: 1.15rem;
-      margin-bottom: 4px;
-    }
-
-    a.project p {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .tag {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-
-    .tag--fr { color: #e74c3c; }
-    .tag--crypto { color: #a78bfa; }
-
-    .copy-btn {
-      appearance: none;
-      border: 1px solid rgba(61, 215, 140, 0.45);
-      background: rgba(61, 215, 140, 0.15);
-      color: var(--text);
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      min-height: 44px;
-    }
-
-    .copy-btn:active { transform: scale(0.98); }
-
-    @media (max-width: 600px) {
-      body { padding-top: 28px; }
-      a.project { padding: 16px; }
-    }
-  </style>
+  <meta name="apple-mobile-web-app-title" content="Le coin Internet" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta name="description" content="Le coin Internet – Trois élèves racontent leur usage d'Internet. Quiz Vrai ou Faux et traduction." />
+  <title>Le coin Internet – Boléro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="js/questions.js" defer></script>
+  <script src="js/quiz.js" defer></script>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Schulprojekte</h1>
-    <p class="lead">Localhost läuft – wähle eine Website:</p>
+  <div class="page">
 
-    <div class="tablet-box" id="tabletBox">
-      <strong>Safari auf dem Tablet / iPad</strong>
-      <span>Gleiches WLAN wie der Computer, dann in Safari diese Adresse öffnen:</span>
-      <span class="tablet-url" id="tabletUrl">lädt…</span>
-      <button type="button" class="copy-btn" id="copyBtn">Adresse kopieren</button>
-      <p style="margin-top:10px;font-size:0.88rem;">
-        Tipp: Computer und Tablet müssen im <em>gleichen WLAN</em> sein.
-        Die Adresse steht auch im Terminal-Fenster nach dem Start.
-      </p>
-    </div>
+    <header class="article-head">
+      <div class="bolero">Boléro</div>
+      <h1>Le coin Internet</h1>
+      <p class="subtitle">Internet : un peu, beaucoup, toujours… ?</p>
+    </header>
 
-    <div class="hint">
-      Start: <code>start.sh</code> / <code>Oeffnen.command</code> (Mac) oder <code>start.bat</code> (Windows).
-      Am PC: <code>http://localhost:8080</code> – am Tablet die WLAN-Adresse oben.
-    </div>
+    <main>
+      <section class="paper">
 
-    <div class="list">
-      <a class="project" href="le-coin-internet/">
-        <span class="tag tag--fr">Französisch</span>
-        <h2>Le coin Internet</h2>
-        <p>Lehrbuch-Seite mit Quiz Vrai/Faux und Übersetzung</p>
-      </a>
+        <p class="paper-intro-line">Trois élèves de notre collège en 4<sup>e</sup> B racontent comment ils utilisent Internet au quotidien.</p>
 
-      <a class="project" href="Projekte%20Creative/">
-        <span class="tag">Creative</span>
-        <h2>Meine Ultra-Cool Website</h2>
-        <p>Uhr, Todos, Quotes und Reaktionsspiel</p>
-      </a>
+        <div class="profiles">
 
-      <a class="project" href="dayflow/">
-        <span class="tag tag--crypto">DayFlow</span>
-        <h2>Live Krypto Dashboard</h2>
-        <p>Charts, Watchlist, Login und Mehrsprachigkeit</p>
-      </a>
-    </div>
+          <!-- Gabriele -->
+          <article class="profile profile--gabriele">
+            <p class="profile__label">Gabriele · 13 ans · 4<sup>e</sup> B</p>
+            <div class="profile__top">
+              <div class="profile__avatar profile__avatar--gabriele">G</div>
+            </div>
+            <div class="bubble bubble--blue">
+              <p><strong>Bonjour !</strong> Je m'appelle Gabriele, j'ai 13 ans et je suis en 4<sup>e</sup> B. J'adore surfer sur Internet et chatter avec mes amis.</p>
+              <p>J'ai mon blog où je raconte ma vie. J'aime aussi lire les pages de mes copains, regarder des photos et des vidéos et écouter de la musique.</p>
+              <p>Avec Internet, je peux rester en contact avec mes copains ! Mais mes parents trouvent que je passe trop de temps sur mon portable. Et je n'ai pas le droit d'être sur Internet après 21 heures…</p>
+            </div>
+          </article>
+
+          <!-- Sebastian -->
+          <article class="profile profile--sebastian">
+            <p class="profile__label profile__label--right">Sebastian · 13 ans · 4<sup>e</sup> B</p>
+            <div class="profile__top">
+              <div class="profile__avatar profile__avatar--sebastian">S</div>
+            </div>
+            <div class="bubble bubble--grey">
+              <p><strong>Salut,</strong> moi, c'est Sebastian. J'ai 13 ans.</p>
+              <p>Sur Internet, j'écris des mails à mes amis. Parfois, je cherche des infos.</p>
+              <p>J'ai des invitations pour le chat. Mais je ne participe pas. Ça ne me dit rien.</p>
+              <p>Pour moi, c'est important de sortir. J'aime parler avec mes copains dehors.</p>
+              <p>Mes copains passent la nuit sur Internet. Le matin, ils sont fatigués !</p>
+              <p>Moi, je préfère dormir. Bon, je pars ! J'ai sport. <strong>Salut !</strong></p>
+            </div>
+          </article>
+
+          <!-- Mats -->
+          <article class="profile profile--mats">
+            <p class="profile__label">Mats · 13 ans · 4<sup>e</sup> B</p>
+            <div class="profile__top">
+              <div class="profile__avatar profile__avatar--mats">M</div>
+            </div>
+            <div class="bubble bubble--green">
+              <p><strong>Bonjour !</strong> Je m'appelle Mats, j'ai 13 ans.</p>
+              <p>J'adore surfer et chatter avec mes amis sur Internet.</p>
+              <p>J'écoute de la musique sur Internet. Avec Internet, je peux rester en contact avec mes copains.</p>
+              <p>Bon, je pars au sport ! <strong>Salut !</strong></p>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Quiz Vrai ou Faux -->
+        <section class="quiz" id="quiz" aria-label="Quiz Vrai ou Faux">
+          <h2 class="quiz__title">🌐 Vrai ou Faux ?</h2>
+          <p class="quiz__subtitle">France, histoire et Internet – 10 questions, de facile à difficile ! (la dernière : traduction)</p>
+
+          <div class="quiz__card" id="quiz-game">
+            <div class="quiz__meta">
+              <span id="quiz-progress">Question 1 / 10</span>
+              <span class="quiz__score">Score : <span id="quiz-score">0</span></span>
+            </div>
+            <div class="quiz__progress-bar" aria-hidden="true">
+              <div class="quiz__progress-fill" id="quiz-progress-fill"></div>
+            </div>
+            <span class="quiz__level quiz__level--easy" id="quiz-level">Facile</span>
+            <p class="quiz__statement" id="quiz-statement"></p>
+            <div class="quiz__buttons" id="quiz-buttons">
+              <button class="quiz__btn quiz__btn--vrai" id="btn-vrai" type="button" aria-label="Antwort: Vrai">Vrai ✓</button>
+              <button class="quiz__btn quiz__btn--faux" id="btn-faux" type="button" aria-label="Antwort: Faux">Faux ✗</button>
+            </div>
+            <div class="quiz__translate" id="quiz-translate">
+              <p class="quiz__prompt-de" id="quiz-prompt-de"></p>
+              <label class="visually-hidden" for="quiz-input">Traduction en français</label>
+              <input class="quiz__input" id="quiz-input" type="text" placeholder="Écris la phrase en français…" autocomplete="off" spellcheck="false" />
+              <button class="quiz__btn quiz__btn--valider" id="btn-valider" type="button">Valider</button>
+            </div>
+            <div class="quiz__feedback" id="quiz-feedback" role="status" aria-live="polite"></div>
+          </div>
+
+          <div class="quiz__card quiz__result" id="quiz-result">
+            <p class="quiz__result-score" id="result-score"></p>
+            <p class="quiz__result-msg" id="result-msg"></p>
+            <button class="quiz__replay" id="btn-replay" type="button">Rejouer</button>
+          </div>
+        </section>
+
+      </section>
+    </main>
+
   </div>
-
-  <script>
-    (function () {
-      var urlEl = document.getElementById("tabletUrl");
-      var copyBtn = document.getElementById("copyBtn");
-      var host = location.hostname;
-      var port = location.port || "80";
-      var pageUrl = location.origin + "/";
-
-      // Wenn schon über WLAN-IP geöffnet (z. B. auf dem Tablet): diese URL anzeigen
-      function setUrl(u) {
-        urlEl.textContent = u;
-        copyBtn.onclick = function () {
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(u).then(function () {
-              copyBtn.textContent = "Kopiert!";
-              setTimeout(function () { copyBtn.textContent = "Adresse kopieren"; }, 1500);
-            }).catch(fallbackCopy);
-          } else {
-            fallbackCopy();
-          }
-          function fallbackCopy() {
-            var range = document.createRange();
-            range.selectNodeContents(urlEl);
-            var sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-            try { document.execCommand("copy"); } catch (e) {}
-            copyBtn.textContent = "Markiert – kopieren mit Cmd/Strg+C";
-          }
-        };
-      }
-
-      if (host !== "127.0.0.1" && host !== "localhost") {
-        setUrl(pageUrl);
-        return;
-      }
-
-      // Am PC (localhost): Tablet-URL aus Startdatei laden
-      fetch(".tablet-url.txt?ts=" + Date.now())
-        .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
-        .then(function (text) {
-          var u = (text || "").trim();
-          if (u && u.indexOf("http") === 0) setUrl(u);
-          else setUrl("Siehe Terminal: http://DEINE-IP:" + (location.port || "8080") + "/");
-        })
-        .catch(function () {
-          setUrl("Siehe Terminal nach dem Start (WLAN-Adresse)");
-        });
-    })();
-  </script>
 </body>
 </html>
