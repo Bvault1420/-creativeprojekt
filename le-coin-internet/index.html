@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Le coin Internet – Internet : Un peu, beaucoup, toujours… ?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-yellow: #FFF3C4;
+      --bg-yellow-light: #FFFDE7;
+      --red-header: #C62828;
+      --red-dark: #8E0000;
+      --orange: #FF8F00;
+      --teal: #00897B;
+      --purple: #5E35B1;
+      --text: #2D2D2D;
+      --text-soft: #5D5D5D;
+      --paper: #FFFEF5;
+      --shadow: 0 8px 32px rgba(0,0,0,0.12);
+      --shadow-paper: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      background: var(--bg-yellow);
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255,143,0,0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(0,137,123,0.08) 0%, transparent 40%);
+      color: var(--text);
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      background: linear-gradient(135deg, var(--red-header) 0%, #D32F2F 100%);
+      color: #fff;
+      padding: 1.5rem 1.25rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .site-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+
+    .site-header::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: 5%;
+      width: 200px;
+      height: 200px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .header-illustration {
+      flex-shrink: 0;
+      width: 90px;
+      height: 90px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      border: 2px solid rgba(255,255,255,0.25);
+    }
+
+    .header-text h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .header-text .subtitle {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1rem, 3vw, 1.35rem);
+      font-weight: 500;
+      opacity: 0.95;
+      margin-top: 0.25rem;
+    }
+
+    .wifi-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .page { grid-template-columns: 1fr; }
+      .sidebar { order: -1; }
+    }
+
+    /* ── Intro ── */
+    .intro {
+      background: var(--paper);
+      border-radius: 16px;
+      padding: 1.5rem 1.75rem;
+      box-shadow: var(--shadow);
+      border-left: 5px solid var(--orange);
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .intro .author {
+      font-weight: 700;
+      color: var(--red-header);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .intro p {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--text-soft);
+    }
+
+    /* ── Profile cards ── */
+    .profiles {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .profile-card {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 1.25rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .profile-card:nth-child(2) { animation-delay: 0.15s; }
+
+    @media (max-width: 520px) {
+      .profile-card { grid-template-columns: 1fr; }
+    }
+
+    .profile-photo {
+      width: 140px;
+      height: 140px;
+      border-radius: 20px;
+      object-fit: cover;
+      box-shadow: var(--shadow-paper);
+      border: 4px solid #fff;
+    }
+
+    @media (max-width: 520px) {
+      .profile-photo { width: 100%; height: 200px; }
+    }
+
+    .speech-bubble {
+      background: var(--paper);
+      border-radius: 4px 20px 20px 20px;
+      padding: 1.5rem 1.75rem;
+      box-shadow: var(--shadow-paper);
+      position: relative;
+    }
+
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 8px,
+        rgba(0,0,0,0.03) 8px,
+        rgba(0,0,0,0.03) 10px
+      );
+      border-radius: 4px 20px 0 0;
+    }
+
+    .speech-bubble.camille { border-top: 4px solid var(--purple); }
+    .speech-bubble.arthur { border-top: 4px solid var(--teal); }
+
+    .profile-name {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .profile-name.camille { color: var(--purple); }
+    .profile-name.arthur { color: var(--teal); }
+
+    .profile-meta {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      margin-bottom: 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .profile-meta span {
+      background: rgba(0,0,0,0.05);
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+    }
+
+    .speech-bubble p { margin-bottom: 0.75rem; }
+    .speech-bubble p:last-child { margin-bottom: 0; }
+
+    .highlight {
+      background: linear-gradient(120deg, rgba(255,143,0,0.2) 0%, rgba(255,143,0,0.05) 100%);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* ── Conclusion ── */
+    .conclusion {
+      margin-top: 2rem;
+      background: linear-gradient(135deg, var(--red-header) 0%, #E53935 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 1.5rem 1.75rem;
+      box-shadow: var(--shadow);
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+
+    .conclusion .author {
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      opacity: 0.85;
+      margin-bottom: 0.5rem;
+    }
+
+    .conclusion p {
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      position: sticky;
+      top: 1.5rem;
+    }
+
+    .box {
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+
+    .box-header {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.65rem 1rem;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .box-header.vocab { background: var(--orange); }
+    .box-header.ondit { background: var(--teal); }
+
+    .box-body {
+      background: var(--paper);
+      padding: 1rem 1.15rem;
+    }
+
+    .vocab-list {
+      list-style: none;
+    }
+
+    .vocab-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.45rem 0;
+      border-bottom: 1px dashed rgba(0,0,0,0.1);
+      font-size: 0.95rem;
+    }
+
+    .vocab-list li:last-child { border-bottom: none; }
+
+    .vocab-fr { font-weight: 600; color: var(--text); }
+    .vocab-de { color: var(--text-soft); font-size: 0.85rem; }
+
+    .ondit-list {
+      list-style: none;
+    }
+
+    .ondit-list li {
+      padding: 0.55rem 0;
+      border-bottom: 1px dashed rgba(0,0,0,0.1);
+      font-size: 0.92rem;
+      color: var(--text);
+      position: relative;
+      padding-left: 1.2rem;
+    }
+
+    .ondit-list li::before {
+      content: '«';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    .ondit-list li:last-child { border-bottom: none; }
+
+  /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      border-top: 2px solid rgba(198,40,40,0.15);
+      background: var(--bg-yellow-light);
+    }
+
+    footer a {
+      color: var(--red-header);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-illustration" aria-hidden="true">🎣💻</div>
+      <div class="header-text">
+        <h1>Le coin Internet</h1>
+        <p class="subtitle">Internet&nbsp;: Un peu, beaucoup, toujours…&nbsp;?</p>
+        <div class="wifi-badge">
+          <span aria-hidden="true">📶</span> @ le Net
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+    <main>
+      <section class="intro" aria-labelledby="intro-title">
+        <p class="author" id="intro-title">Enzo</p>
+        <p>«&nbsp;Nous avons demandé à des élèves de notre école comment ils utilisent le Net. Voici leurs réponses.&nbsp;»</p>
+      </section>
+
+      <section class="profiles" aria-label="Témoignages des élèves">
+
+        <article class="profile-card">
+          <img
+            class="profile-photo"
+            src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=280&h=280&fit=crop&crop=faces"
+            alt="Camille, 13 ans, utilise son ordinateur portable"
+            loading="lazy"
+          />
+          <div class="speech-bubble camille">
+            <h2 class="profile-name camille">Camille</h2>
+            <div class="profile-meta">
+              <span>13 ans</span>
+              <span>en 4<sup>e</sup></span>
+              <span>📱 Blog</span>
+            </div>
+            <p>J'adore <span class="highlight">surfer</span> sur Internet et <span class="highlight">chatter</span> avec mes copines et mes copains. J'ai mon propre <span class="highlight">blog</span> où je parle de ma vie.</p>
+            <p>J'aime lire les pages de mes amis, regarder des photos et des vidéos, et écouter de la musique.</p>
+            <p>Mes parents trouvent que je passe trop de temps sur mon téléphone. Après <strong>21&nbsp;h</strong>, je n'ai plus le droit d'être en ligne.</p>
+          </div>
+        </article>
+
+        <article class="profile-card">
+          <img
+            class="profile-photo"
+            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=280&h=280&fit=crop&crop=faces"
+            alt="Arthur, 12 ans, travaille sur son ordinateur"
+            loading="lazy"
+          />
+          <div class="speech-bubble arthur">
+            <h2 class="profile-name arthur">Arthur</h2>
+            <div class="profile-meta">
+              <span>12 ans</span>
+              <span>✉️ E-mails</span>
+              <span>🔍 Recherche</span>
+            </div>
+            <p>J'utilise Internet pour écrire des <span class="highlight">e-mails</span> à mes amis et pour chercher des informations.</p>
+            <p>Je reçois des invitations pour chatter, mais je n'y participe pas beaucoup&nbsp;: je préfère <span class="highlight">sortir</span> avec mes copains en vrai.</p>
+            <p>Certains de mes amis restent toute la nuit à chatter et ils sont fatigués le matin. Moi, je préfère <span class="highlight">dormir</span>&nbsp;!</p>
+            <p>Maintenant, je vais faire du sport. À plus&nbsp;!</p>
+          </div>
+        </article>
+
+      </section>
+
+      <section class="conclusion" aria-labelledby="conclusion-title">
+        <p class="author" id="conclusion-title">Enzo</p>
+        <p>«&nbsp;Pour Camille et Arthur, Internet sert surtout à rester en contact avec les copains par e-mail ou par chat. Mais ça prend aussi beaucoup de temps&nbsp;!&nbsp;»</p>
+      </section>
+    </main>
+
+    <aside class="sidebar" aria-label="Aide linguistique">
+
+      <div class="box">
+        <div class="box-header vocab">Vocabulaire</div>
+        <div class="box-body">
+          <ul class="vocab-list">
+            <li><span class="vocab-fr">dormir</span><span class="vocab-de">schlafen</span></li>
+            <li><span class="vocab-fr">sites Internet</span><span class="vocab-de">Internetseiten</span></li>
+            <li><span class="vocab-fr">sortir</span><span class="vocab-de">ausgehen</span></li>
+            <li><span class="vocab-fr">copains / copines</span><span class="vocab-de">Freunde</span></li>
+            <li><span class="vocab-fr">surfer</span><span class="vocab-de">surfen</span></li>
+            <li><span class="vocab-fr">important</span><span class="vocab-de">wichtig</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-header ondit">On dit</div>
+        <div class="box-body">
+          <ul class="ondit-list">
+            <li>Comment est-ce que tu utilises Internet&nbsp;?</li>
+            <li>Combien de temps est-ce que tu passes sur le Net&nbsp;?</li>
+            <li>Est-ce que tu as un blog&nbsp;?</li>
+            <li>À quelle heure est-ce que tu te couches&nbsp;?</li>
+          </ul>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <footer>
+    <p>Projet français · Basé sur l'article <em>Le coin Internet</em> · <a href="../indexxxxxxxx.html">Retour</a></p>
+  </footer>
+
+</body>
+</html>
