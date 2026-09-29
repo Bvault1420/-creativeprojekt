@@ -1,36 +1,17 @@
-# Handystuhl — FreeCAD Teile
+# Handystuhl — fertige Druckdateien
 
-Zwei flache Platten für den Handystuhl (später 3D-drucken):
+Diese zwei Dateien kommen auf den USB-Stick. Der 3D-Drucker / Slicer (z. B. Cura, PrusaSlicer) öffnet sie direkt. Maße sind in Millimetern.
 
-| Teil | Name | Länge | Breite | Höhe |
-|------|------|-------|--------|------|
-| 1 | Sitzfläche | 90 mm | 40 mm | 5 mm |
-| 2 | Rückenlehne | 65 mm | 40 mm | 5 mm |
+| Datei | Teil | Maße |
+|-------|------|------|
+| `sitzflaeche_90x40x5.stl` | Sitzfläche | 90 mm lang × 40 mm breit × 5 mm hoch |
+| `rueckenlehne_65x40x5.stl` | Rückenlehne | 65 mm lang × 40 mm breit × 5 mm hoch |
 
-## Variante A — Skript (schnell)
+## Auf den Stick
 
-1. FreeCAD öffnen
-2. Menü **Macro → Macros…** → Macro auswählen: `handystuhl_teile.py`
-3. **Execute**
-4. Im Model-Baum erscheinen `Sitzflaeche` und `Rueckenlehne`
-5. Zum Drucken: Rechtsklick auf ein Teil → **Export** → Format **STL**
+1. USB-Stick einstecken
+2. Diese zwei `.stl`-Dateien auf den Stick kopieren
+3. Stick an den Rechner mit dem Slicer (oder direkt an den Drucker, falls der STL liest)
+4. Jede Datei einzeln öffnen und drucken
 
-Optional in der Datei `EXPORT_STL = True` setzen — dann entstehen automatisch:
-- `sitzflaeche_90x40x5.stl`
-- `rueckenlehne_65x40x5.stl`
-
-## Variante B — per Hand in FreeCAD
-
-1. Neues Dokument → Arbeitsbereich **Part**
-2. Menü **Part → Primitives → Cube** (oder Box)
-3. Im Property-Panel:
-   - Sitzfläche: Length = 90, Width = 40, Height = 5 → umbenennen in `Sitzflaeche`
-4. Nochmal Cube:
-   - Rückenlehne: Length = 65, Width = 40, Height = 5 → umbenennen in `Rueckenlehne`
-5. Jede Platte als STL exportieren und drucken
-
-## Hinweis
-
-Das sind erstmal nur die zwei flachen Bretter. Später können wir noch
-Löcher, Schlitze oder eine Schräge für die Lehne ergänzen, damit der
-Stuhl wirklich steht und das Handy hält.
+Ordner: `freecad/handystuhl/`
