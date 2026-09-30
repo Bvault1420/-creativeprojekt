@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>BOLT ARENA</title>
+  <meta name="description" content="BOLT ARENA – Wellen, Bosse, Upgrades. Solo, mit KI oder zu zweit." />
+  <link rel="stylesheet" href="css/game.css" />
+</head>
+<body>
+  <canvas id="view" width="1600" height="900" aria-hidden="true"></canvas>
+
+  <button id="btn-mute" class="float-btn float-btn--mute" type="button">Ton an</button>
+  <button id="btn-pause" class="float-btn float-btn--pause" type="button" hidden>Pause</button>
+
+  <section id="menu" class="overlay">
+    <div class="panel">
+      <p class="eyebrow">Arena · Wellen · Highscore</p>
+      <h1 class="logo">BOLT<br />ARENA</h1>
+      <p class="tag">Überlebe die Wellen. Hol dir den Highscore.</p>
+
+      <div class="chars" role="listbox" aria-label="Schiff wählen">
+        <button class="char is-on" type="button" data-char="funke">
+          <span class="swatch swatch--funke"></span>
+          <strong>Funke</strong>
+          <em>Schnellfeuer, leicht</em>
+        </button>
+        <button class="char" type="button" data-char="hammer">
+          <span class="swatch swatch--hammer"></span>
+          <strong>Hammer</strong>
+          <em>Hart, durchschlagend</em>
+        </button>
+        <button class="char" type="button" data-char="geist">
+          <span class="swatch swatch--geist"></span>
+          <strong>Geist</strong>
+          <em>Startet mit Drohne</em>
+        </button>
+      </div>
+
+      <div class="actions">
+        <button id="btn-solo" class="btn" type="button">Solo starten</button>
+        <button id="btn-ki" class="btn btn--ghost" type="button">Mit KI-Partner</button>
+        <button id="btn-coop" class="btn btn--ghost" type="button">Zwei Spieler</button>
+      </div>
+
+      <p class="help">
+        Du: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> oder Pfeile · Maus zielt · Feuer ist automatisch · <kbd>Umschalt</kbd> oder <kbd>Leertaste</kbd> Dash
+        <br />
+        Freund: <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> · schießt selbst · <kbd>Rechts-Umschalt</kbd> Dash
+        <br />
+        Gamepad: Sticks steuern, Knopf A dasht
+      </p>
+
+      <div class="board-wrap">
+        <h2>Bestenliste</h2>
+        <ol id="board"></ol>
+      </div>
+
+      <a class="coin" href="/">Le Coin</a>
+    </div>
+  </section>
+
+  <section id="upgrade" class="overlay" hidden>
+    <div class="panel">
+      <p class="eyebrow">Welle geschafft</p>
+      <h2>Wähl ein Upgrade</h2>
+      <div id="cards" class="cards"></div>
+      <p class="help">Klick oder Taste <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></p>
+    </div>
+  </section>
+
+  <section id="pause" class="overlay" hidden>
+    <div class="panel panel--narrow">
+      <p class="eyebrow">Pausiert</p>
+      <h2>Kurz Luft holen</h2>
+      <div class="actions">
+        <button id="btn-resume" class="btn" type="button">Weiter</button>
+        <button id="btn-quit" class="btn btn--ghost" type="button">Zum Menü</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="over" class="overlay" hidden>
+    <div class="panel panel--narrow">
+      <p class="eyebrow">Run vorbei</p>
+      <h2 id="over-title">Getroffen</h2>
+      <p id="over-score" class="bigscore">0</p>
+      <p id="over-stats" class="stats"></p>
+      <label class="name-label" for="pname">Name für die Bestenliste
+        <input id="pname" maxlength="12" placeholder="Dein Name" autocomplete="off" />
+      </label>
+      <div class="actions">
+        <button id="btn-again" class="btn" type="button">Nochmal</button>
+        <button id="btn-menu" class="btn btn--ghost" type="button">Menü</button>
+      </div>
+    </div>
+  </section>
+
+  <p id="sim" hidden></p>
+  <script src="js/game.js" defer></script>
+</body>
+</html>
