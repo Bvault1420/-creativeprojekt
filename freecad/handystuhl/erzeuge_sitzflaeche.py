@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Schreibt Sitzflaeche/Sitzflaeche.step — nur die Sitzfläche, vorne mit Schräge."""
+"""Schreibt Sitzflaeche/Sitzflaeche.step — nur die Sitzfläche, vorne mit rechteckigem Rand."""
 
 import os
 import cadquery as cq
@@ -11,15 +11,14 @@ OUT = os.path.join(ROOT, "Sitzflaeche", "Sitzflaeche.step")
 def bauen():
     # Platte: 90 mm lang, 40 mm breit, 5 mm hoch
     platte = cq.Workplane("XY").box(90, 40, 5, centered=(False, False, False))
-    # Vorne (x = 0): Schräge, 5 mm lang, 40 mm breit, 5 mm hoch.
-    # An der Vorderkante 5 mm über der Platte, nach hinten läuft sie auf die Sitzfläche aus.
-    schraege = (
-        cq.Workplane("XZ")
-        .polyline([(0, 5), (5, 5), (0, 10)])
-        .close()
-        .extrude(-40)
+    # Vorne (x = 0): rechteckiger Rand, 5 mm lang, 40 mm breit, 5 mm hoch.
+    # Liegt auf der Platte, also 5 mm über der Sitzfläche.
+    rand = (
+        cq.Workplane("XY")
+        .box(5, 40, 5, centered=(False, False, False))
+        .translate((0, 0, 5))
     )
-    teil = platte.val().fuse(schraege.val())
+    teil = platte.val().fuse(rand.val())
     assy = cq.Assembly()
     assy.add(cq.Workplane(obj=teil), name="Sitzflaeche")
     os.makedirs(os.path.dirname(OUT), exist_ok=True)

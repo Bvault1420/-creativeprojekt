@@ -8,9 +8,8 @@ In diesem Ordner liegt die Datei:
 Darin ist nur die Sitzfläche, ohne Rückenlehne.
 
   Platte:   90 mm lang, 40 mm breit, 5 mm hoch
-  Vorne:    eine kleine Schräge, 5 mm lang, 40 mm breit, 5 mm hoch
-            Sie steht an der Vorderkante 5 mm über der Platte
-            und läuft nach hinten auf die Sitzfläche aus,
+  Vorne:    ein rechteckiger Rand, 5 mm lang, 40 mm breit, 5 mm hoch
+            Er liegt auf der Platte und steht 5 mm über der Sitzfläche,
             damit das Handy nicht nach vorne rutscht.
 
 So öffnest du sie:
@@ -22,6 +21,6 @@ So öffnest du sie:
   4. Die Datei Sitzflaeche.step in diesem Ordner auswählen
   5. Öffnen
 
-Danach siehst du nur die Sitzfläche mit der Schräge vorne.
+Danach siehst du nur die Sitzfläche mit dem rechteckigen Rand vorne.
 Wenn du weiter daran arbeiten willst: Datei → Speichern unter
 und als FreeCAD-Datei speichern (Endung .FCStd).
