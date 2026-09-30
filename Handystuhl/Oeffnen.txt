@@ -1,0 +1,24 @@
+Handystuhl in FreeCAD öffnen
+================================
+
+In diesem Ordner liegt die Datei:
+
+  Handystuhl.step
+
+Darin sind beide Teile:
+
+  Sitzfläche   90 mm lang, 40 mm breit, 5 mm hoch
+  Rückenlehne  65 mm lang, 40 mm breit, 5 mm hoch
+
+So öffnest du sie:
+
+  1. Diesen Ordner auf deinen PC kopieren
+     (zum Beispiel auf den Desktop: Ordner "Handystuhl")
+  2. FreeCAD starten
+  3. Menü: Datei → Öffnen
+  4. Die Datei Handystuhl.step in diesem Ordner auswählen
+  5. Öffnen
+
+Danach siehst du beide Platten.
+Wenn du weiter daran arbeiten willst: Datei → Speichern unter
+und als FreeCAD-Datei speichern (Endung .FCStd).
