@@ -2,13 +2,13 @@
 
 Die Datei zum Öffnen in FreeCAD liegt im Ordner `Handystuhl/`:
 
-- `Handystuhl/Handystuhl.step`
+- `Handystuhl/Handystuhl.step` — Sitzfläche und Rückenlehne zusammen
+- `Rueckenlehne/Rueckenlehne.step` — nur die Rückenlehne
 
-FreeCAD: **Datei → Öffnen** und diese Datei wählen.
+FreeCAD: **Datei → Öffnen** und die gewünschte Datei wählen.
 
-Enthalten:
-
-| Teil | Maße |
-|------|------|
-| Sitzfläche | 90 × 40 × 5 mm |
-| Rückenlehne | 65 × 40 × 5 mm |
+| Datei | Teil | Maße |
+|------|------|------|
+| `Handystuhl.step` | Sitzfläche | 90 × 40 × 5 mm |
+| `Handystuhl.step` | Rückenlehne | 65 × 40 × 5 mm |
+| `Rueckenlehne.step` | nur Rückenlehne | 65 × 40 × 5 mm |
