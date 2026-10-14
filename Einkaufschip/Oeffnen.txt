@@ -1,0 +1,31 @@
+Einkaufschip in FreeCAD öffnen
+================================
+
+In diesem Ordner liegt die Datei:
+
+  Einkaufschip.step
+
+So ist der Chip aufgebaut:
+
+  1. Kreis auf der XY-Ebene, Durchmesser 23,25 mm
+     Extrusion 2,33 mm hoch
+  2. Kreis auf der Oberfläche, 2,5 mm von der Außenkante versetzt
+     0,5 mm tief eingeschnitten
+  3. Griff auf der XY-Ebene aus Rechteck (8 mm hoch) und Kreis
+     (Radius 5 mm, Mittelpunkt 20 mm vom Ursprung)
+     Extrusion bis zur Oberseite des Chips
+  4. Loch für den Schlüsselring, Radius 3 mm, durch alles
+     Kante am Loch mit Radius 1 mm abgerundet
+  5. Schrift FUNKTION TEST auf der Vertiefung, 0,5 mm tief
+
+So öffnest du sie:
+
+  1. Diesen Ordner auf deinen PC kopieren
+     (zum Beispiel auf den Desktop: Ordner "Einkaufschip")
+  2. FreeCAD starten
+  3. Menü: Datei → Öffnen
+  4. Die Datei Einkaufschip.step auswählen
+  5. Öffnen
+
+Wenn du weiter daran arbeiten willst: Datei → Speichern unter
+und als FreeCAD-Datei speichern (Endung .FCStd).
